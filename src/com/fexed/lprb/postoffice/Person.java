@@ -14,7 +14,7 @@ public class Person implements Runnable {
     @Override
     public void run() {
         try {
-            System.out.println("[" + this.number + "] ***partito");
+            System.out.println("[" + this.number + "] ***partito, " + this.duration + "s");
             sleep(duration*1000);
             System.out.println("[" + this.number + "] finito***");
         } catch (InterruptedException ignored) {}
