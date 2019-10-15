@@ -1,8 +1,13 @@
 package com.fexed.lprb.postoffice;
 
+import java.sql.Time;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
 /*
 Simulare il flusso di clienti in un ufficio postale che ha 4 sportelli. Nell'ufficio esiste:
-
 -   un'ampia sala d'attesa in cui ogni persona può entrare liberamente. Quando entra, ogni persona prende il numero dalla
     numeratrice e aspetta il proprio turno in questa sala.
 -   una seconda sala, meno ampia, posta davanti agli sportelli, in cui si può entrare solo  a gruppi di k persone (nella
@@ -12,7 +17,6 @@ Simulare il flusso di clienti in un ufficio postale che ha 4 sportelli. Nell'uff
     la persona esce dall'ufficio
 
 Scrivere un programma in cui:
-
 -   l'ufficio viene modellato come una classe JAVA, in cui viene attivato un ThreadPool di dimensione uguale al numero
     degli sportelli
 -   la coda delle persone presenti nella sala d'attesa è gestita esplicitamente dal programma
@@ -26,7 +30,14 @@ Facoltativo: prevedere il caso di un flusso continuo di clienti e la possibilit�
 stesso dopo che in un certo intervallo di tempo non si presentano clienti al suo sportello.
  */
 public class PostOfficeMain {
-
     public static void main(String[] args) {
+        PostOffice po = new PostOffice(10);
+        Random rnd = new Random(Calendar.getInstance().getTimeInMillis());
+        int max = rnd.nextInt(100);
+        for(int i = 0; i < max; i++) po.addNewPerson(new Person(i, rnd.nextInt(10)+2));
+
+        while (po.hasPeople()) {
+            po.assignPerson(po.waitForDoor(), po.popPerson());
+        }
     }
 }
