@@ -26,4 +26,7 @@ Facoltativo: prevedere il caso di un flusso continuo di clienti e la possibilit√
 stesso dopo che in un certo intervallo di tempo non si presentano clienti al suo sportello.
  */
 public class PostOfficeMain {
+
+    public static void main(String[] args) {
+    }
 }
