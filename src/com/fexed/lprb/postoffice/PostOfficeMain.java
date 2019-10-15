@@ -3,13 +3,13 @@ package com.fexed.lprb.postoffice;
 /*
 Simulare il flusso di clienti in un ufficio postale che ha 4 sportelli. Nell'ufficio esiste:
 
-un'ampia sala d'attesa in cui ogni persona può entrare liberamente. Quando entra, ogni persona prende il numero dalla
-numeratrice e aspetta il proprio turno in questa sala.
-una seconda sala, meno ampia, posta davanti agli sportelli, in cui si può entrare solo  a gruppi di k persone (nella
-seconda sala possono stare in attesa massimo k persone)
-Una persona si mette quindi prima in coda nella prima sala, poi passa nella seconda sala.
-Ogni persona impiega un tempo differente per la propria operazione allo sportello. Una volta terminata l'operazione,
-la persona esce dall'ufficio
+-   un'ampia sala d'attesa in cui ogni persona può entrare liberamente. Quando entra, ogni persona prende il numero dalla
+    numeratrice e aspetta il proprio turno in questa sala.
+-   una seconda sala, meno ampia, posta davanti agli sportelli, in cui si può entrare solo  a gruppi di k persone (nella
+    seconda sala possono stare in attesa massimo k persone)
+-   Una persona si mette quindi prima in coda nella prima sala, poi passa nella seconda sala.
+-   Ogni persona impiega un tempo differente per la propria operazione allo sportello. Una volta terminata l'operazione,
+    la persona esce dall'ufficio
 
 Scrivere un programma in cui:
 
