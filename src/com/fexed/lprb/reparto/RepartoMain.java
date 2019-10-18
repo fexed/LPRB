@@ -29,5 +29,10 @@ Il programma deve terminare quando tutti i pazienti utenti hanno completato le v
 public class RepartoMain {
 
     public static void main(String[] args) {
+        if (args.length != 3) {
+            System.out.println("Please specify the number of patients in the <red>, <yellow> and <white> queue.");
+        } else {
+            Reparto r = new Reparto(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+        }
     }
 }
