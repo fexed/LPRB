@@ -1,9 +1,6 @@
 package com.fexed.lprb.postoffice;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
 
 public class PostOffice {
     private Thread[] door;
