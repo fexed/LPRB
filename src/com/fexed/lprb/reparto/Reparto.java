@@ -35,6 +35,7 @@ public class Reparto {
             t.setName("W" + i);
             t.start();
         }
+        System.out.println("  CODE  \t\tNM\tW\tY\tR");
     }
 
     public void enter(Patient p) {
@@ -59,9 +60,9 @@ public class Reparto {
         synchronized (this.medics) {
             try {
                 for (int i = 0; i < 10; i++) this.medics[i].redCodeSignal = true;
-                System.out.println("REDCODE+\t\t" + p.name);
+                System.out.println("REDCODE+\t\t" + p.name + "\t\t\tR");
                 sleep((rnd.nextInt(5) + 1) * 1000);
-                System.out.println("REDCODE-\t\t" + p.name);
+                System.out.println("REDCODE-\t\t" + p.name + "\t\t\tR");
             } catch (InterruptedException ignored) {}
             for (int i = 0; i < 10; i++) {
                 try {
@@ -83,9 +84,9 @@ public class Reparto {
             try {
                 while (m.redCodeSignal) m.wait();
                 m.isFree = false;
-                System.out.println("YELCOD+" + (p.medic+1) + "\t\t" + p.name);
+                System.out.println("YELCOD+" + (p.medic+1) + "\t\t" + p.name + "\t\tY");
                 sleep((rnd.nextInt(5)+1)*1000);
-                System.out.println("YELCOD-" + (p.medic+1) + "\t\t" + p.name);
+                System.out.println("YELCOD-" + (p.medic+1) + "\t\t" + p.name + "\t\tY");
                 m.isFree = true;
                 m.notify();
             } catch (InterruptedException | IllegalMonitorStateException ignored) {}
@@ -109,9 +110,9 @@ public class Reparto {
             try {
                 while (m.redCodeSignal) m.wait();
                 m.isFree = false;
-                System.out.println("WHTCOD+" + (m.number+1) + "\t\t"+ p.name);
+                System.out.println("WHTCOD+" + (m.number+1) + "\t\t"+ p.name + "\tW");
                 sleep((rnd.nextInt(5) + 1) * 1000);
-                System.out.println("WHTCOD-" + (m.number+1) + "\t\t"+ p.name);
+                System.out.println("WHTCOD-" + (m.number+1) + "\t\t"+ p.name + "\tW");
                 m.isFree = true;
                 m.notify();
             } catch (InterruptedException | IllegalMonitorStateException ignored) {}
