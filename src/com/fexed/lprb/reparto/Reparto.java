@@ -59,7 +59,13 @@ public class Reparto {
         //System.out.println("\t\t\t\t\t" + p.name + " in attesa");
         synchronized (this.medics) {
             try {
-                for (int i = 0; i < 10; i++) this.medics[i].redCodeSignal = true;
+                for (int i = 0; i < 10; i++) {
+                    try {
+                        this.medics[i].redCodeSignal = true;
+                        this.medics[i].isFree = false;
+                        this.medics[i].wait();
+                    } catch (IllegalMonitorStateException ignored) {}
+                }
                 System.out.println("REDCODE+\t\t" + p.name + "\t\t\tR");
                 sleep((rnd.nextInt(5) + 1) * 1000);
                 System.out.println("REDCODE-\t\t" + p.name + "\t\t\tR");
@@ -67,6 +73,7 @@ public class Reparto {
             for (int i = 0; i < 10; i++) {
                 try {
                     this.medics[i].redCodeSignal = false;
+                    this.medics[i].isFree = true;
                     this.medics[i].notify();
                 } catch (IllegalMonitorStateException ignored) {}
             }
