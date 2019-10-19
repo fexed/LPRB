@@ -8,6 +8,8 @@ import static java.lang.Thread.sleep;
 public class Reparto {
     private int nr, ny, nw;
     private final Medic[] medics;
+    public static int medRedCodeRdy;
+    public static final Object medRedCodeRdyLock = new Object();
 
     public Reparto(int red, int yellow, int white) {
         this.nr = red;
@@ -15,6 +17,7 @@ public class Reparto {
         this.nw = white;
         this.medics = new Medic[10];
         for (int i = 0; i < 10; i++) medics[i] = new Medic(i);
+        Reparto.medRedCodeRdy = 0;
 
         Random rnd = new Random(Calendar.getInstance().getTimeInMillis());
         for (int i = 0; i < this.nr; i++) { //red
@@ -62,20 +65,19 @@ public class Reparto {
                 for (int i = 0; i < 10; i++) {
                     try {
                         this.medics[i].redCodeSignal = true;
-                        this.medics[i].isFree = false;
                         this.medics[i].wait();
-                    } catch (IllegalMonitorStateException ignored) {}
+                    } catch (IllegalMonitorStateException ignored) {
+                    }
                 }
-                System.out.println("REDCODE+\t\t" + p.name + "\t\t\tR");
-                sleep((rnd.nextInt(5) + 1) * 1000);
-                System.out.println("REDCODE-\t\t" + p.name + "\t\t\tR");
-            } catch (InterruptedException ignored) {}
+                for (int i = 0; i < 10; i++) this.medics[i].workFor(p, 1, "REDCODE", "\t\tR");
+            } catch (InterruptedException ignored) {
+            }
             for (int i = 0; i < 10; i++) {
                 try {
                     this.medics[i].redCodeSignal = false;
-                    this.medics[i].isFree = true;
                     this.medics[i].notify();
-                } catch (IllegalMonitorStateException ignored) {}
+                } catch (IllegalMonitorStateException ignored) {
+                }
             }
         }
     }
@@ -87,16 +89,10 @@ public class Reparto {
         synchronized (this.medics) {
             m = this.medics[p.medic];
         }
-        synchronized (m) {
-            try {
-                while (m.redCodeSignal) m.wait();
-                m.isFree = false;
-                System.out.println("YELCOD+" + (p.medic+1) + "\t\t" + p.name + "\t\tY");
-                sleep((rnd.nextInt(5)+1)*1000);
-                System.out.println("YELCOD-" + (p.medic+1) + "\t\t" + p.name + "\t\tY");
-                m.isFree = true;
-                m.notify();
-            } catch (InterruptedException | IllegalMonitorStateException ignored) {}
+        try {
+            while (m.redCodeSignal) m.wait();
+            m.workFor(p, rnd.nextInt(5) + 1, "YELCOD", "\tY");
+        } catch (InterruptedException | IllegalMonitorStateException ignored) {
         }
     }
 
@@ -104,25 +100,18 @@ public class Reparto {
         Random rnd = new Random(Calendar.getInstance().getTimeInMillis());
         //System.out.println("\t\t\t\t\t" + p.name + " in attesa");
         Medic m = null;
-        synchronized (this.medics) {
-            do {
+        do {
+            synchronized (this.medics) {
                 for (int i = 0; i < 10; i++)
                     if (this.medics[i].isFree) {
                         m = this.medics[i];
                         break;
                     }
-            } while (m == null);
-        }
-        synchronized (m) {
-            try {
-                while (m.redCodeSignal) m.wait();
-                m.isFree = false;
-                System.out.println("WHTCOD+" + (m.number+1) + "\t\t"+ p.name + "\tW");
-                sleep((rnd.nextInt(5) + 1) * 1000);
-                System.out.println("WHTCOD-" + (m.number+1) + "\t\t"+ p.name + "\tW");
-                m.isFree = true;
-                m.notify();
-            } catch (InterruptedException | IllegalMonitorStateException ignored) {}
-        }
+            }
+        } while (m == null);
+        try {
+            while (m.redCodeSignal) m.wait();
+            m.workFor(p, rnd.nextInt(5) + 1, "WHTCOD", "W");
+        } catch (InterruptedException | IllegalMonitorStateException ignored) {}
     }
 }
