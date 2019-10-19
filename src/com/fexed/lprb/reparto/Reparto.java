@@ -65,19 +65,20 @@ public class Reparto {
                 for (int i = 0; i < 10; i++) {
                     try {
                         this.medics[i].redCodeSignal = true;
-                        this.medics[i].wait();
-                    } catch (IllegalMonitorStateException ignored) {
-                    }
+                        this.medics[i].isFree = false;
+                    } catch (IllegalMonitorStateException ignored) {}
                 }
-                for (int i = 0; i < 10; i++) this.medics[i].workFor(p, 1, "REDCODE", "\t\tR");
+                System.out.println("REDCODE+\t\t" + p.name + "\t\t\tR");
+                sleep((rnd.nextInt(10) + 1) * 1000);
+                System.out.println("REDCODE-\t\t" + p.name + "\t\t\tR");
             } catch (InterruptedException ignored) {
             }
             for (int i = 0; i < 10; i++) {
                 try {
                     this.medics[i].redCodeSignal = false;
+                    this.medics[i].isFree = true;
                     this.medics[i].notify();
-                } catch (IllegalMonitorStateException ignored) {
-                }
+                } catch (IllegalMonitorStateException ignored) {}
             }
         }
     }
@@ -92,8 +93,7 @@ public class Reparto {
         try {
             while (m.redCodeSignal) m.wait();
             m.workFor(p, rnd.nextInt(5) + 1, "YELCOD", "\tY");
-        } catch (InterruptedException | IllegalMonitorStateException ignored) {
-        }
+        } catch (InterruptedException | IllegalMonitorStateException ignored) {}
     }
 
     public void handleWhite(Patient p) {
