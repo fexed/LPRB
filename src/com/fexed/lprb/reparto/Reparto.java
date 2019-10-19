@@ -8,7 +8,6 @@ import static java.lang.Thread.sleep;
 public class Reparto {
     private int nr, ny, nw;
     private final Medic[] medics;
-    private final Object redCode;
 
     public Reparto(int red, int yellow, int white) {
         this.nr = red;
@@ -16,7 +15,6 @@ public class Reparto {
         this.nw = white;
         this.medics = new Medic[10];
         for (int i = 0; i < 10; i++) medics[i] = new Medic(i);
-        this.redCode = new Object();
 
         Random rnd = new Random(Calendar.getInstance().getTimeInMillis());
         for (int i = 0; i < this.nr; i++) { //red
@@ -61,9 +59,9 @@ public class Reparto {
         synchronized (this.medics) {
             try {
                 for (int i = 0; i < 10; i++) this.medics[i].redCodeSignal = true;
-                System.out.println("R!!+\tPaziente " + p.name + " in codice rosso");
+                System.out.println("REDCODE+\t\t" + p.name);
                 sleep((rnd.nextInt(5) + 1) * 1000);
-                System.out.println("R!!-\tFine codice rosso");
+                System.out.println("REDCODE-\t\t" + p.name);
             } catch (InterruptedException ignored) {}
             for (int i = 0; i < 10; i++) {
                 try {
@@ -85,9 +83,9 @@ public class Reparto {
             try {
                 while (m.redCodeSignal) m.wait();
                 m.isFree = false;
-                System.out.println("Y!+\t\tPaziente " + p.name + " in codice giallo per medico " + (p.medic+1));
+                System.out.println("YELCOD+" + (p.medic+1) + "\t\t" + p.name);
                 sleep((rnd.nextInt(5)+1)*1000);
-                System.out.println("Y!-\t\tFine per medico " + (p.medic+1));
+                System.out.println("YELCOD-" + (p.medic+1) + "\t\t" + p.name);
                 m.isFree = true;
                 m.notify();
             } catch (InterruptedException | IllegalMonitorStateException ignored) {}
@@ -111,9 +109,9 @@ public class Reparto {
             try {
                 while (m.redCodeSignal) m.wait();
                 m.isFree = false;
-                System.out.println("W+\t\tPaziente " + p.name + " in codice bianco con medico " + (m.number+1));
+                System.out.println("WHTCOD+" + (m.number+1) + "\t\t"+ p.name);
                 sleep((rnd.nextInt(5) + 1) * 1000);
-                System.out.println("W-\t\tFine codice bianco con medico " + (m.number+1));
+                System.out.println("WHTCOD-" + (m.number+1) + "\t\t"+ p.name);
                 m.isFree = true;
                 m.notify();
             } catch (InterruptedException | IllegalMonitorStateException ignored) {}
