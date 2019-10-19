@@ -7,6 +7,7 @@ import static java.lang.Thread.sleep;
 
 public class Patient implements Runnable {
     public int times, code, medic;
+    public String name;
     private Reparto r;
 
     public Patient(int times, int code, int medic, Reparto r) { //0 R, 1 Y, 2 W
@@ -19,6 +20,7 @@ public class Patient implements Runnable {
     @Override
     public void run() {
         Random rnd = new Random(Calendar.getInstance().getTimeInMillis());
+        this.name = Thread.currentThread().getName();
         for (; this.times > 0; this.times--) {
             r.enter(this);
             try {
