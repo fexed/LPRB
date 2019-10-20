@@ -32,7 +32,7 @@ public class RepartoMain {
         if (args.length != 3) {
             System.out.println("Please specify the number of patients in the <red>, <yellow> and <white> queue.");
         } else {
-            Reparto r = new Reparto(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+
         }
     }
 }
