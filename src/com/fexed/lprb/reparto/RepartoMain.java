@@ -26,13 +26,49 @@ accesso ed il successivo e l'intervallo di permanenza in visita mediante il meto
 Il programma deve terminare quando tutti i pazienti utenti hanno completato le visite in reparto.
 */
 
+import java.util.Random;
+
 public class RepartoMain {
 
     public static void main(String[] args) {
         if (args.length != 3) {
-            System.out.println("Please specify the number of patients in the <red>, <yellow> and <white> queue.");
+            System.err.println("Please specify the number of patients in the <red>, <yellow> and <white> queue.");
         } else {
+            int r = 0, y = 0, w = 0;
+            boolean err = false;
 
+            try {
+                r = Integer.parseInt(args[0]);
+            } catch (NumberFormatException ex) {
+                System.err.println("Please specify a valid number for the red queue");
+                err = true;
+            }
+            try {
+                y = Integer.parseInt(args[1]);
+            } catch (NumberFormatException ex) {
+                System.err.println("Please specify a valid number for the yellow queue");
+                err = true;
+            }
+            try {
+                w = Integer.parseInt(args[2]);
+            } catch (NumberFormatException ex) {
+                System.err.println("Please specify a valid number for the white queue");
+                err = true;
+            }
+            if (err) System.exit(1);
+
+            Reparto rep = new Reparto();
+
+            for (int i = 0; i < r; i++) {
+                new Thread(new Patient(rep, "RED"+i, 0, -1)).start();
+            }
+            for (int i = 0; i < y; i++) {
+                Random rnd = new Random(System.currentTimeMillis());
+                new Thread(new Patient(rep, "YLW"+i, 1, rnd.nextInt(10))).start();
+            }
+            for (int i = 0; i < w; i++) {
+                new Thread(new Patient(rep, "WHT"+i, 2, -1)).start();
+            }
         }
     }
 }
