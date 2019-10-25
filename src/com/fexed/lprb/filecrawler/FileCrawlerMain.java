@@ -18,6 +18,28 @@ Il programma deve essere strutturato come segue:
 */
 
 public class FileCrawlerMain {
+    static int k = 10;
+    static boolean working = true;
+
     public static void main(String[] args) {
+        if (args.length != 1) {
+            System.err.println("Please specify the <path>");
+        } else {
+            String path = args[0];
+            FileCrawlerQueue queue = new FileCrawlerQueue();
+
+            Thread P = new Thread(new FileCrawlerProducer(path, queue));
+            P.start();
+
+            for (int i = 0; i < k; i++) {
+                Thread T = new Thread(new FileCrawlerConsumer(queue));
+                T.setName("T" + i);
+                T.start();
+            }
+
+            try { P.join(); } catch (InterruptedException ignored) {}
+            System.out.println("\t\t\tProducer done");
+            working = false;
+        }
     }
 }
