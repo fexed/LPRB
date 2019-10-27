@@ -36,7 +36,7 @@ public class FileCrawlerConsumer implements Runnable {
                 path = this.queue.get();    //Estraggo il prossimo elemento dalla coda (ved. FileCrawlerQueue)
             }
             try { Thread.sleep(500); } catch (InterruptedException ignored) {} //Attendo se la lista è vuota
-        } while (this.queue.peek() != null);    //Concludo se la lista risulta ancora vuota: il produttore ha finito
+        } while (this.queue.peek() != null); //Concludo se la lista risulta ancora vuota: il produttore ha finito
         System.out.println("\t\t\t" + Thread.currentThread().getName() + " fine");
     }
 }
