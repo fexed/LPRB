@@ -4,26 +4,32 @@ import com.google.gson.Gson;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class CCReader implements Runnable {
     @Override
     public void run() {
         String inputFileName = "records.json";
-        File inputFile = new File(inputFileName);
+        Path path = Paths.get(inputFileName);
         String str;
 
         Gson gson = new Gson();
         try {
-            FileInputStream inStream = new FileInputStream(inputFile);
-            BufferedReader reader  = new BufferedReader(new InputStreamReader(inStream));
+            FileChannel fileChnl = FileChannel.open(path, StandardOpenOption.READ);
+            ByteBuffer bBuffer = ByteBuffer.allocate(1024);
             StringBuilder sBuffer = new StringBuilder();
-            while ((str = reader.readLine()) != null) {
-                sBuffer.append(str);
+            while (fileChnl.read(bBuffer) != -1) {
+                bBuffer.flip();
+                while (bBuffer.hasRemaining()) sBuffer.append(StandardCharsets.UTF_8.decode(bBuffer).toString());
+                bBuffer.clear();
             }
 
             CCPerson[] persons = gson.fromJson(sBuffer.toString(), (Type) CCPerson[].class);
-            //System.out.println(Thread.currentThread().getName() + ": l'ultimo CC è di " + persons[persons.length - 1].nome + " " + persons[persons.length - 1].cognome);
-
             for (CCPerson person : persons) {
                 MainClass.poolExecutor.submit(new CCAnalyzer(person));
             }
