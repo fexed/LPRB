@@ -30,9 +30,9 @@ public class MainClass {
 
     public static void main(String[] args) {
         long time = System.currentTimeMillis();
-        Thread readerThread = new Thread(new CCReader());                               //Preparazione del thread lettore
+        Thread readerThread = new Thread(new CCReader());                               //Preparazione del lettore
         readerThread.setName("Lettore");
-        poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);  //Preparazione della threadpool
+        poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);  //Preparazione del threadpool
         readerThread.start();                                                           //Partenza
         try {
             readerThread.join();
