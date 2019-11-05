@@ -28,7 +28,7 @@ Il programma deve terminare quando tutti i pazienti utenti hanno completato le v
 
 import java.util.Random;
 
-public class RepartoMain {
+public class MainClass {
 
     public static void main(String[] args) {
         if (args.length != 3) {
