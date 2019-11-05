@@ -15,25 +15,24 @@ public class CCReader implements Runnable {
     @Override
     public void run() {
         String inputFileName = "records.json";
-        Path path = Paths.get(inputFileName);
-        String str;
+        Path path = Paths.get(inputFileName);                                       //Preparazione del file da leggere
 
         Gson gson = new Gson();
         try {
-            FileChannel fileChnl = FileChannel.open(path, StandardOpenOption.READ);
-            ByteBuffer bBuffer = ByteBuffer.allocate(1024);
-            StringBuilder sBuffer = new StringBuilder();
+            FileChannel fileChnl = FileChannel.open(path, StandardOpenOption.READ); //Apertura canale del file
+            ByteBuffer bBuffer = ByteBuffer.allocate(1024);                         //Allocazione del buffer
+            StringBuilder sBuffer = new StringBuilder();                            //Buffer di costruzione stringa JSON
             while (fileChnl.read(bBuffer) != -1) {
-                bBuffer.flip();
+                bBuffer.flip();                                                     //Imposto per lettura
                 while (bBuffer.hasRemaining()) sBuffer.append(StandardCharsets.UTF_8.decode(bBuffer).toString());
-                bBuffer.clear();
+                bBuffer.clear();                                                    //Riparto dall'inizio e in scrittura
             }
 
-            CCPerson[] persons = gson.fromJson(sBuffer.toString(), (Type) CCPerson[].class);
+            CCPerson[] persons = gson.fromJson(sBuffer.toString(), (Type) CCPerson[].class); //Lego i CC
             for (CCPerson person : persons) {
-                MainClass.poolExecutor.submit(new CCAnalyzer(person));
+                MainClass.poolExecutor.submit(new CCAnalyzer(person));              //Assegno i task da eseguire
             }
-            MainClass.poolExecutor.shutdown();
+            MainClass.poolExecutor.shutdown();                                      //Segnalo la fine del lavori
         } catch (IOException ignored) { }
     }
 }
