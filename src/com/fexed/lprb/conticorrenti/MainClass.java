@@ -29,14 +29,23 @@ public class MainClass {
     public static ThreadPoolExecutor poolExecutor;
 
     public static void main(String[] args) {
-        Thread readerThread = new Thread(new CCReader());
+        long time = System.currentTimeMillis();
+        Thread readerThread = new Thread(new CCReader());                               //Preparazione del thread lettore
         readerThread.setName("Lettore");
-        poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
-        readerThread.start();
+        poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);  //Preparazione della threadpool
+        readerThread.start();                                                           //Partenza
         try {
             readerThread.join();
-            poolExecutor.awaitTermination(1, TimeUnit.MINUTES);
+            poolExecutor.awaitTermination(1, TimeUnit.MINUTES);                 //Attesa della fine dei lavori
         } catch (InterruptedException ignored) {}
-        System.out.println("Bonifico\t\t" + CCStats.getnBonifico() + "\nAccredito\t\t" + CCStats.getnAccredito() + "\nBollettino\t\t" + CCStats.getnBollettino() + "\nF24\t\t\t\t" + CCStats.getnF24() + "\nPagoBancomat\t" + CCStats.getnPagoBancomat());
+        time = System.currentTimeMillis() - time;
+        System.out.println(
+                "Bonifico\t\t" + CCStats.getnBonifico() +
+                "\nAccredito\t\t" + CCStats.getnAccredito() +
+                "\nBollettino\t\t" + CCStats.getnBollettino() +
+                "\nF24\t\t\t\t" + CCStats.getnF24() +
+                "\nPagoBancomat\t" + CCStats.getnPagoBancomat() +                        //Output delle info richieste
+                "\n" + time + "ms"
+        );
     }
 }
