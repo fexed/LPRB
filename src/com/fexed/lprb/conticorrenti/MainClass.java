@@ -5,9 +5,9 @@ Creare un file contenente oggetti che rappresentano i conti correnti di una banc
 
 Ogni conto corrente contiene il nome del correntista ed una lista di movimenti.
 
- I movimenti registrati per un conto corrente sono relativi agli ultimi 2 anni, quindi possono essere molto numerosi.
- Per ogni movimento vengono registrati la data e la causale del movimento.
- L'insieme delle causali possibili è fissato: Bonifico, Accredito, Bollettino, F24, PagoBancomat.
+I movimenti registrati per un conto corrente sono relativi agli ultimi 2 anni, quindi possono essere molto numerosi.
+Per ogni movimento vengono registrati la data e la causale del movimento.
+L'insieme delle causali possibili è fissato: Bonifico, Accredito, Bollettino, F24, PagoBancomat.
 
 -   rileggere il file e trovare, per ogni possibile causale, quanti movimenti hanno quella causale.
 -   progettare un'applicazione che attiva un insieme di thread. Uno di essi legge dal file gli oggetti “conto corrente”
@@ -18,11 +18,25 @@ Ogni conto corrente contiene il nome del correntista ed una lista di movimenti.
 -   utilizzare NIO per l'interazione con il file e JSON per la serializzazione
  */
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Federico Matteoni
  */
 public class MainClass {
+    public static ThreadPoolExecutor poolExecutor;
 
     public static void main(String[] args) {
+        Thread readerThread = new Thread(new CCReader());
+        readerThread.setName("Lettore");
+        poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+        readerThread.start();
+        try {
+            readerThread.join();
+            poolExecutor.awaitTermination(1, TimeUnit.MINUTES);
+        } catch (InterruptedException ignored) {}
+        System.out.println("Bonifico\t\t" + CCStats.getnBonifico() + "\nAccredito\t\t" + CCStats.getnAccredito() + "\nBollettino\t\t" + CCStats.getnBollettino() + "\nF24\t\t\t\t" + CCStats.getnF24() + "\nPagoBancomat\t" + CCStats.getnPagoBancomat());
     }
 }
