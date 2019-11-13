@@ -2,16 +2,11 @@ package com.fexed.lprb.httpfiletransfer;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Date;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class Handler implements Runnable {
     private Socket skt;
@@ -27,22 +22,28 @@ public class Handler implements Runnable {
             InputStream inStream = skt.getInputStream();        //Read the HTTP request
             String HTTPRequest = new String(inStream.readNBytes(100));
             int indexOfFirstNewLine = HTTPRequest.indexOf("\n");//A bit of string manipulation to get the path
-            String HTTPVersion = HTTPRequest.substring(0, indexOfFirstNewLine).split(" ")[2];
             String pathRequested = HTTPRequest.substring(0, indexOfFirstNewLine).split(" ")[1].substring(1);
-            System.out.println(Thread.currentThread().getName() + "\tRequested: " + pathRequested + "\t" + HTTPVersion);
+            System.out.println(Thread.currentThread().getName() + "\tRequested: " + pathRequested);
 
             File file = new File(pathRequested);
-            byte[] fileContents = Files.readAllBytes(Paths.get(pathRequested));
-
+            byte[] fileContents = null;
             OutputStream outStream = skt.getOutputStream();
-            outStream.write((HTTPVersion + " 200 OK\n").getBytes(Charset.defaultCharset()));
-            outStream.write(("Server: Fexed's HTTPFileTransferServer v0.1\n").getBytes(Charset.defaultCharset()));
-            outStream.write(("Date: " + new Date().toString() + "\n").getBytes(Charset.defaultCharset()));
-            outStream.write(("Content-Type: text/plain\n").getBytes(Charset.defaultCharset()));
-            outStream.write(("Content-Length: " + file.length() + "\n").getBytes(Charset.defaultCharset()));
-            outStream.write(("\n").getBytes(Charset.defaultCharset()));
-            outStream.write(fileContents);
-            outStream.flush();
+            try {
+                fileContents = Files.readAllBytes(Paths.get(pathRequested));
+                outStream.write(("HTTP/1.1 200 OK\n").getBytes(Charset.defaultCharset()));
+                outStream.write(("Server: Fexed's HTTPFileTransferServer v0.1\n").getBytes(Charset.defaultCharset()));
+                outStream.write(("Date: " + new Date().toString() + "\n").getBytes(Charset.defaultCharset()));
+                outStream.write(("Content-Type: text/plain\n").getBytes(Charset.defaultCharset()));
+                outStream.write(("Content-Length: " + file.length() + "\n").getBytes(Charset.defaultCharset()));
+                outStream.write(("\n").getBytes(Charset.defaultCharset()));
+                outStream.write(fileContents);
+                outStream.flush();
+            } catch (NoSuchFileException ex) {
+                outStream.write(("HTTP/1.1 500 No Such File Exception\n").getBytes(Charset.defaultCharset()));
+                outStream.write(("Server: Fexed's HTTPFileTransferServer v0.1\n").getBytes(Charset.defaultCharset()));
+                outStream.write(("Date: " + new Date().toString() + "\n").getBytes(Charset.defaultCharset()));
+                outStream.flush();
+            }
 
             System.out.println(Thread.currentThread().getName() + "\tClosing connection");
             skt.close();

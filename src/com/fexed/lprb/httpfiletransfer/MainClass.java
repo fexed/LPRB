@@ -17,26 +17,15 @@ Per inviare al server le richieste, utilizzare un qualsiasi browser.
 import org.yaml.snakeyaml.util.ArrayUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 public class MainClass {
     public static void main(String[] args) {
+        boolean running = true;
         ServerSocket srvSkt = null;
         Socket skt = null;
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
@@ -44,14 +33,14 @@ public class MainClass {
         try {
             srvSkt = new ServerSocket(1337);
             do {
-                skt = srvSkt.accept();                             //Apertura e accettazione della connessione
+                skt = srvSkt.accept();                              //Apertura e accettazione della connessione
 
                 threadPool.execute(new Handler(skt));               //Thread START
-            } while (false);
+            } while (running);
             threadPool.shutdown();
             try { threadPool.awaitTermination(1, TimeUnit.SECONDS); }
             catch (InterruptedException ignored) {}
-            srvSkt.close();                                     //Chiusura della connessione
+            srvSkt.close();                                         //Chiusura della connessione
         } catch (IOException e) { e.printStackTrace(); }
     }
 }
