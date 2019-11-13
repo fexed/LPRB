@@ -6,6 +6,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -31,19 +32,16 @@ public class Handler implements Runnable {
             System.out.println(Thread.currentThread().getName() + "\tRequested: " + pathRequested + "\t" + HTTPVersion);
 
             File file = new File(pathRequested);
-            BufferedReader buffReader = new BufferedReader(new FileReader(file));
-            StringBuilder sb = new StringBuilder();
-            String str;
-            while ((str = buffReader.readLine()) != null) sb.append(str);
+            byte[] fileContents = Files.readAllBytes(Paths.get(pathRequested));
 
             OutputStream outStream = skt.getOutputStream();
             outStream.write((HTTPVersion + " 200 OK\n").getBytes(Charset.defaultCharset()));
             outStream.write(("Server: Fexed's HTTPFileTransferServer v0.1\n").getBytes(Charset.defaultCharset()));
             outStream.write(("Date: " + new Date().toString() + "\n").getBytes(Charset.defaultCharset()));
             outStream.write(("Content-Type: text/plain\n").getBytes(Charset.defaultCharset()));
-            outStream.write(("Content-Length: " + sb.length() + "\n").getBytes(Charset.defaultCharset()));
+            outStream.write(("Content-Length: " + file.length() + "\n").getBytes(Charset.defaultCharset()));
             outStream.write(("\n").getBytes(Charset.defaultCharset()));
-            outStream.write(sb.toString().getBytes(Charset.defaultCharset()));
+            outStream.write(fileContents);
             outStream.flush();
 
             System.out.println(Thread.currentThread().getName() + "\tClosing connection");
