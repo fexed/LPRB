@@ -19,9 +19,9 @@ public class Handler implements Runnable {
     public void run() {
         try {
             System.out.println(Thread.currentThread().getName() + "\tNew connection from " + skt.getInetAddress().getHostAddress());
-            InputStream inStream = skt.getInputStream();        //Read the HTTP request
+            InputStream inStream = skt.getInputStream();        //Ottenimento dell'HTTP request header
             String HTTPRequest = new String(inStream.readNBytes(100));
-            int indexOfFirstNewLine = HTTPRequest.indexOf("\n");//A bit of string manipulation to get the path
+            int indexOfFirstNewLine = HTTPRequest.indexOf("\n");//Ottenimento del path dal request header
             String pathRequested = HTTPRequest.substring(0, indexOfFirstNewLine).split(" ")[1].substring(1);
             System.out.println(Thread.currentThread().getName() + "\tRequested: " + pathRequested);
 
@@ -37,12 +37,12 @@ public class Handler implements Runnable {
                 outStream.write(("Content-Length: " + file.length() + "\n").getBytes(Charset.defaultCharset()));
                 outStream.write(("\n").getBytes(Charset.defaultCharset()));
                 outStream.write(fileContents);
-                outStream.flush();
+                outStream.flush();                              //Header e file in caso esista
             } catch (NoSuchFileException ex) {
                 outStream.write(("HTTP/1.1 500 No Such File Exception\n").getBytes(Charset.defaultCharset()));
                 outStream.write(("Server: Fexed's HTTPFileTransferServer v0.1\n").getBytes(Charset.defaultCharset()));
                 outStream.write(("Date: " + new Date().toString() + "\n").getBytes(Charset.defaultCharset()));
-                outStream.flush();
+                outStream.flush();                              //Header d'errore in caso di file non esistente
             }
 
             System.out.println(Thread.currentThread().getName() + "\tClosing connection");
