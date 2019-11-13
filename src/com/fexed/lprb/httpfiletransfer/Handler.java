@@ -38,7 +38,7 @@ public class Handler implements Runnable {
 
             OutputStream outStream = skt.getOutputStream();
             outStream.write((HTTPVersion + " 200 OK\n").getBytes(Charset.defaultCharset()));
-            outStream.write(("Server: HTTPFileTransfer Server by Fexed : 0.1\n").getBytes(Charset.defaultCharset()));
+            outStream.write(("Server: Fexed's HTTPFileTransferServer v0.1\n").getBytes(Charset.defaultCharset()));
             outStream.write(("Date: " + new Date().toString() + "\n").getBytes(Charset.defaultCharset()));
             outStream.write(("Content-Type: text/plain\n").getBytes(Charset.defaultCharset()));
             outStream.write(("Content-Length: " + sb.length() + "\n").getBytes(Charset.defaultCharset()));
