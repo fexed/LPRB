@@ -23,7 +23,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -49,7 +51,7 @@ public class MainClass {
             int indexOfFirstNewLine = HTTPRequest.indexOf("\n");//A bit of string manipulation to get the path
             String HTTPVersion = HTTPRequest.substring(0, indexOfFirstNewLine).split(" ")[2];
             String pathRequested = HTTPRequest.substring(0, indexOfFirstNewLine).split(" ")[1].substring(1);
-            System.out.println(pathRequested);
+            System.out.println("Requested: " + pathRequested + "\n" + HTTPVersion);
 
             Path path = Paths.get(pathRequested);               //Apro il file richiesto
             FileChannel fileChnl = FileChannel.open(path, StandardOpenOption.READ);
@@ -57,11 +59,8 @@ public class MainClass {
             while (fileChnl.read(bBuffer) != -1) { }
 
             OutputStream outStream = skt.getOutputStream();
-            byte[] HTTPResponseHeader = (HTTPVersion + " 200 OK\nContent-Type: text/plain\n\n").getBytes(Charset.defaultCharset());
-            byte[] HTTPResponse = new byte[HTTPResponseHeader.length + bBuffer.array().length + 1];
-            System.arraycopy(HTTPResponseHeader, 0, HTTPResponse, 0, HTTPResponseHeader.length);
-            System.arraycopy(bBuffer.array(), 0, HTTPResponse, HTTPResponseHeader.length + 1, bBuffer.array().length);
-            outStream.write(HTTPResponse);
+            outStream.write((HTTPVersion + " 200 OK\nContent-Type: text/html\n\n").getBytes(Charset.defaultCharset()));
+            outStream.write(bBuffer.array());
 
             skt.close();
             //Thread END
