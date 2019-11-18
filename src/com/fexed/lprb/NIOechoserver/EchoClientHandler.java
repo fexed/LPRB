@@ -1,6 +1,7 @@
 package com.fexed.lprb.NIOechoserver;
 
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author Federico Matteoni
@@ -14,6 +15,8 @@ public class EchoClientHandler implements Runnable {
 
     @Override
     public void run() {
+        System.out.println(Thread.currentThread().getName() + "\tConnesso");
 
+        System.out.println(Thread.currentThread().getName() + "\tDisconnesso");
     }
 }

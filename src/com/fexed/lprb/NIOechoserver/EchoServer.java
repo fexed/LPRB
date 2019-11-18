@@ -33,4 +33,8 @@ public class EchoServer implements Runnable {
             srvSkt.close();                                         //Chiusura della connessione
         } catch (IOException e) { e.printStackTrace(); }
     }
+
+    public static void main(String[] args) {
+        new Thread(new EchoServer()).start();
+    }
 }
