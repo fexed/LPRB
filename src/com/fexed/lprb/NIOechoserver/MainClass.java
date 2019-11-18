@@ -13,5 +13,6 @@ Il client legge il messaggio da inviare da console, lo invia al server e visuali
 public class MainClass {
 
     public static void main(String[] args) {
+
     }
 }
