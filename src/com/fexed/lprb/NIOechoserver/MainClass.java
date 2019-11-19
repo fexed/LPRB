@@ -12,7 +12,17 @@ Il client legge il messaggio da inviare da console, lo invia al server e visuali
 
 public class MainClass {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        Thread serverThread = new Thread(new EchoServer());
+        serverThread.setName("ServerThread");
+        serverThread.start();
 
+        new Thread(new EchoClient("Client")).start();
+        new Thread(new EchoClient("Long String to echo")).start();
+        new Thread(new EchoClient("4 d1fF|cUl7 STR!NG t0  E C H O  -->")).start();
+        new Thread(new EchoClient("Some more echoes")).start();
+        new Thread(new EchoClient("Echo...echo...echo...\techo...")).start();
+        new Thread(new EchoClient("exit")).start();
+        serverThread.join();
     }
 }
