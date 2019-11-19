@@ -3,6 +3,8 @@ package com.fexed.lprb.NIOechoserver;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -19,13 +21,21 @@ public class EchoClient {
             String str = in.next();
 
             SocketChannel skt = SocketChannel.open();
+            System.out.println("Connecting...");
             skt.connect(new InetSocketAddress("127.0.0.1", 1337));
+            skt.configureBlocking(false);
+            System.out.println("Connected. Sending \"" + str + "\"...");
 
+            Selector selector = Selector.open();
+            SelectionKey keyW = skt.register(selector, SelectionKey.OP_WRITE);
+            SelectionKey keyR = skt.register(selector, SelectionKey.OP_READ);
             ByteBuffer bBuff = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8));
-            bBuff.flip();
-            while (bBuff.hasRemaining()) skt.write(bBuff);
+            keyW.attach(bBuff);
             bBuff.clear();
-            skt.read(bBuff);
+            System.out.println("Data sent. Awating echo...");
+
+            bBuff = null;
+            while (bBuff == null) bBuff = (ByteBuffer) keyR.attachment();
 
             System.out.println(StandardCharsets.UTF_8.decode(bBuff));
 

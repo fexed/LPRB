@@ -2,6 +2,8 @@ package com.fexed.lprb.NIOechoserver;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.Executors;
@@ -17,12 +19,15 @@ public class EchoServer implements Runnable {
         boolean running = true;
         ServerSocketChannel srvSkt = null;
         SocketChannel skt = null;
+        Selector selector;
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
 
         try {
             srvSkt = ServerSocketChannel.open();
             srvSkt.socket().bind(new InetSocketAddress(1337));
             srvSkt.configureBlocking(false);
+            selector = Selector.open();
+            srvSkt.register(selector, SelectionKey.OP_ACCEPT);
             do {
                 do { skt = srvSkt.accept(); } while(skt == null);
                 threadPool.execute(new EchoClientHandler(skt));
