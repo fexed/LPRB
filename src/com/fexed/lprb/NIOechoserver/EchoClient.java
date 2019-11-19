@@ -14,29 +14,42 @@ import java.util.Scanner;
  * @author Federico Matteoni
  */
 public class EchoClient implements Runnable{
+    private String strToEcho;
+
     public static void main(String[] args) {
-        new Thread(new EchoClient()).start();
+        if (args.length >= 1) new Thread(new EchoClient(args[0])).start();
+        else new Thread(new EchoClient()).start();
+    }
+
+    public EchoClient() {
+        this.strToEcho = null;
+    }
+
+    public EchoClient(String strToEcho) {
+        this.strToEcho = strToEcho;
     }
 
     @Override
     public void run() {
         try {
-            Scanner in = new Scanner(System.in);                                                    //Input
-            in.useDelimiter("\n");
-            System.out.print("String to be echoed: ");
-            String str = in.next();
+            if (this.strToEcho == null) {
+                Scanner in = new Scanner(System.in);                                                //Input
+                in.useDelimiter("\n");
+                System.out.print("String to be echoed: ");
+                strToEcho = in.next();
+            }
 
             SocketChannel skt = SocketChannel.open();                                               //Connessione
             System.out.println("Connecting...");
             skt.connect(new InetSocketAddress("127.0.0.1", 1337));
             skt.configureBlocking(false);
-            System.out.println("Connected. Sending \"" + str + "\"...");
+            System.out.println("Connected. Sending \"" + strToEcho + "\"...");
 
             Selector selector = Selector.open();
             SelectionKey keyW = skt.register(selector, SelectionKey.OP_WRITE);
             SelectionKey keyR = skt.register(selector, SelectionKey.OP_READ);
 
-            ByteBuffer bBuff = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8));               //Scrittura
+            ByteBuffer bBuff = ByteBuffer.wrap(strToEcho.getBytes(StandardCharsets.UTF_8));               //Scrittura
             int n;
             do { n = ((SocketChannel) keyW.channel()).write(bBuff);}  while(n > 0);
             System.out.println("Data sent. Awating echo...");
