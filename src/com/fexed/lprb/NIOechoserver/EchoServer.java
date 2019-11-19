@@ -30,12 +30,12 @@ public class EchoServer implements Runnable {
             srvSkt.register(selector, SelectionKey.OP_ACCEPT);
             do {
                 do { skt = srvSkt.accept(); } while(skt == null);
-                threadPool.execute(new EchoClientHandler(skt));
+                threadPool.execute(new EchoClientHandler(skt));                 //Gestione client connesso
             } while (running);
             threadPool.shutdown();
             try { threadPool.awaitTermination(1, TimeUnit.SECONDS); }
             catch (InterruptedException ignored) {}
-            srvSkt.close();                                         //Chiusura della connessione
+            srvSkt.close();                                                     //Chiusura della connessione
         } catch (IOException e) { e.printStackTrace(); }
     }
 

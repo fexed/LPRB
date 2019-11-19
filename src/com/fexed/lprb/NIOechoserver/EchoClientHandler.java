@@ -1,6 +1,7 @@
 package com.fexed.lprb.NIOechoserver;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -19,8 +20,7 @@ public class EchoClientHandler implements Runnable {
 
     @Override
     public void run() {
-        int bytesRead;
-        ByteBuffer bBuff = null;
+        ByteBuffer bBuff = ByteBuffer.allocate(128);
         StringBuilder sBuff = new StringBuilder();
         String str;
         SelectionKey keyR, keyW;
@@ -33,14 +33,17 @@ public class EchoClientHandler implements Runnable {
             keyR = skt.register(selector, SelectionKey.OP_READ);
             keyW = skt.register(selector, SelectionKey.OP_WRITE);
 
-            while (bBuff == null) bBuff = (ByteBuffer) keyR.attachment();
+            int n;
+            do { n = ((SocketChannel) keyR.channel()).read(bBuff); } while (n > 0);
+            bBuff.flip();
             sBuff.append(StandardCharsets.UTF_8.decode(bBuff).toString());
 
             str = sBuff.toString();
-            System.out.println(Thread.currentThread().getName() + "\t" + str);
+            System.out.println(Thread.currentThread().getName() + "\t\"" + str + "\"");
             str = str.concat("\tEchoed by Fexed's Server");
             bBuff = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8));
-            keyW.attach(bBuff);
+            do { n = ((SocketChannel) keyW.channel()).write(bBuff); }  while(n > 0);
+
         } catch (IOException ignored) {}
 
         System.out.println(Thread.currentThread().getName() + "\tDisconnesso");

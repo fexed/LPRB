@@ -16,11 +16,11 @@ import java.util.Scanner;
 public class EchoClient {
     public static void main(String[] args) {
         try {
-            Scanner in = new Scanner(System.in);
+            Scanner in = new Scanner(System.in);                                        //Input
             System.out.print("String to be echoed: ");
             String str = in.next();
 
-            SocketChannel skt = SocketChannel.open();
+            SocketChannel skt = SocketChannel.open();                                   //Connessione
             System.out.println("Connecting...");
             skt.connect(new InetSocketAddress("127.0.0.1", 1337));
             skt.configureBlocking(false);
@@ -29,14 +29,16 @@ public class EchoClient {
             Selector selector = Selector.open();
             SelectionKey keyW = skt.register(selector, SelectionKey.OP_WRITE);
             SelectionKey keyR = skt.register(selector, SelectionKey.OP_READ);
-            ByteBuffer bBuff = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8));
-            keyW.attach(bBuff);
-            bBuff.clear();
+
+            ByteBuffer bBuff = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8));   //Scrittura
+            int n;
+            do { n = ((SocketChannel) keyW.channel()).write(bBuff); }  while(n > 0);
             System.out.println("Data sent. Awating echo...");
 
-            bBuff = null;
-            while (bBuff == null) bBuff = (ByteBuffer) keyR.attachment();
+            bBuff = ByteBuffer.allocate(128);                                           //Lettura
+            do { n = ((SocketChannel) keyR.channel()).read(bBuff); } while (n > 0);
 
+            bBuff.flip();                                                               //Stampa
             System.out.println(StandardCharsets.UTF_8.decode(bBuff));
 
             skt.close();
