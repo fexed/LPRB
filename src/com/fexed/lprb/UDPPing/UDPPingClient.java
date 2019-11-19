@@ -17,7 +17,7 @@ public class UDPPingClient implements Runnable {
 
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         if (args.length != 2) System.err.println("Usage: java UDPPingClient hostname port");
         else {
             try {

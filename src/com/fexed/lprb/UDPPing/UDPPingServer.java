@@ -20,7 +20,7 @@ public class UDPPingServer implements Runnable{
         } catch (SocketException ignored) {}
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         if (args.length != 1) System.err.println("Usage: java UDPPingServer port");
         else {
             try {
