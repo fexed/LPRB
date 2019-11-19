@@ -39,10 +39,12 @@ public class EchoClientHandler implements Runnable {
             bBuff.flip();
             sBuff.append(StandardCharsets.UTF_8.decode(bBuff).toString());
             str = sBuff.toString();                                                                 //Costruzione String
-            if (str.equals("exit")) EchoServer.shutdownServer();
+
+            if (str.equals("exit")) EchoServer.shutdownServer();                                    //Close on "exit"
 
             System.out.println(Thread.currentThread().getName() + "\t\"" + str + "\"");             //Output
-            str = str.concat("\tEchoed by Fexed's Server");                                         //Preparazione echo
+
+            str = str.concat("\tEchoed by Fexed's Echo Server");                                    //Preparazione echo
             bBuff = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8));
             do { n = ((SocketChannel) keyW.channel()).write(bBuff); }  while(n > 0);                //Invio echo
 
