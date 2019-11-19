@@ -21,6 +21,8 @@ public class UDPPingClient implements Runnable {
     @Override
     public void run() {
         int transmitted = 0, received = 0;
+        long RTTmin = 1000, RTTmax = 0;
+        float RTTavg = 0;
 
         System.out.println("Launching " + this.getClass().getSimpleName() + " on " + this.hostname + ":" + this.port);
 
@@ -40,12 +42,21 @@ public class UDPPingClient implements Runnable {
                         dtgSkt.receive(packet);
                         time = System.currentTimeMillis() - time;
                         System.out.println(time + " ms");
+                        if (RTTmin > time) RTTmin = time;
+                        if (RTTmax < time) RTTmax = time;
+                        RTTavg = (RTTavg + time)/(transmitted + 1);
+
                         received++;
                     } catch (SocketTimeoutException ex) {
                         System.out.println("*");
                     }
                 } catch (IOException ex) { System.err.println("IOException error on packet " + transmitted + ". Resending"); transmitted--; }
             }
+            double loss = ((transmitted - received)/(transmitted * 1.0)) * 100;
+
+            System.out.println("\t\t\t\t---- PING Statistics ----");
+            System.out.printf(transmitted + " packets transmitted, " + received + " packets received, %1.0f%% packet loss\n", loss);
+            System.out.printf("RTT (ms) min/avg/max = " + RTTmin + "/%1.2f/" + RTTmax + "\n", RTTavg);
         } catch (SocketException ex) { System.err.println("SocketException error: " + ex.getMessage()); }
     }
 
