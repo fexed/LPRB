@@ -1,14 +1,21 @@
 package com.fexed.lprb.UDPPing;
 
+import java.net.DatagramPacket;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+
 /**
  * @author Federico Matteoni
  */
 public class UDPPingClient implements Runnable {
-    private String hostname;
+    private InetAddress hostname;
     private int port;
 
     public UDPPingClient(String hostname, int port) {
-        this.hostname = hostname;
+        try { this.hostname = InetAddress.getByName(hostname); }
+        catch (UnknownHostException e) { System.err.println("ERR - arg 1");}
         this.port = port;
     }
 
