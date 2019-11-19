@@ -14,9 +14,9 @@ import java.util.concurrent.TimeUnit;
  * @author Federico Matteoni
  */
 public class EchoServer implements Runnable {
+    static boolean running = true;
     @Override
     public void run() {
-        boolean running = true;
         ServerSocketChannel srvSkt = null;
         SocketChannel skt = null;
         Selector selector;
@@ -31,14 +31,21 @@ public class EchoServer implements Runnable {
 
             System.out.println(Thread.currentThread().getName() + ": server online");
             do {
-                do { skt = srvSkt.accept(); } while(skt == null);
-                threadPool.execute(new EchoClientHandler(skt));                 //Gestione client connesso
+                skt = srvSkt.accept();
+                if (skt != null) threadPool.execute(new EchoClientHandler(skt));//Gestione client connesso
+                else Thread.sleep(500);
             } while (running);
+            System.out.println(Thread.currentThread().getName() + ": server shutting down");
             threadPool.shutdown();
             try { threadPool.awaitTermination(1, TimeUnit.SECONDS); }
             catch (InterruptedException ignored) {}
             srvSkt.close();                                                     //Chiusura della connessione
-        } catch (IOException e) { e.printStackTrace(); }
+            System.out.println(Thread.currentThread().getName() + ": server offline");
+        } catch (IOException | InterruptedException e) { e.printStackTrace(); }
+    }
+
+    public static void shutdownServer() {
+        running = false;
     }
 
     public static void main(String[] args) {
