@@ -23,16 +23,16 @@ public class EchoServer implements Runnable {
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
 
         try {
-            srvSkt = ServerSocketChannel.open();
-            srvSkt.socket().bind(new InetSocketAddress(1337));
+            srvSkt = ServerSocketChannel.open();                                  //Apertura del socket di ascolto
+            srvSkt.socket().bind(new InetSocketAddress(1337));              //Configurazione del socket
             srvSkt.configureBlocking(false);
             selector = Selector.open();
             srvSkt.register(selector, SelectionKey.OP_ACCEPT);
 
             System.out.println(Thread.currentThread().getName() + ": server online");
             do {
-                skt = srvSkt.accept();
-                if (skt != null) threadPool.execute(new EchoClientHandler(skt));//Gestione client connesso
+                skt = srvSkt.accept();                                          //Accettazione e gestione dei client
+                if (skt != null) threadPool.execute(new EchoClientHandler(skt));
                 else Thread.sleep(500);
             } while (running);
             System.out.println(Thread.currentThread().getName() + ": server shutting down");
@@ -44,6 +44,9 @@ public class EchoServer implements Runnable {
         } catch (IOException | InterruptedException e) { e.printStackTrace(); }
     }
 
+    /**
+     * Avvia la procedura di chiusura del server
+     */
     public static void shutdownServer() {
         running = false;
     }

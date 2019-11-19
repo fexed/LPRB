@@ -21,10 +21,17 @@ public class EchoClient implements Runnable{
         else new Thread(new EchoClient()).start();
     }
 
+    /**
+     * Costruttore di default: il client chiederà in input da console la stringa da spedire
+     */
     public EchoClient() {
         this.strToEcho = null;
     }
 
+    /**
+     * Costruttore per testing: il client spedirà {@code strToEcho} al server echo
+     * @param strToEcho La stringa da spedire al server echo
+     */
     public EchoClient(String strToEcho) {
         this.strToEcho = strToEcho;
     }
@@ -49,7 +56,7 @@ public class EchoClient implements Runnable{
             SelectionKey keyW = skt.register(selector, SelectionKey.OP_WRITE);
             SelectionKey keyR = skt.register(selector, SelectionKey.OP_READ);
 
-            ByteBuffer bBuff = ByteBuffer.wrap(strToEcho.getBytes(StandardCharsets.UTF_8));               //Scrittura
+            ByteBuffer bBuff = ByteBuffer.wrap(strToEcho.getBytes(StandardCharsets.UTF_8));         //Scrittura
             int n;
             do { n = ((SocketChannel) keyW.channel()).write(bBuff);}  while(n > 0);
             System.out.println("Data sent. Awating echo...");
