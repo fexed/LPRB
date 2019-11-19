@@ -25,28 +25,28 @@ public class EchoClientHandler implements Runnable {
         String str;
         SelectionKey keyR, keyW;
 
-        System.out.println(Thread.currentThread().getName() + "\tConnesso");
+        System.out.println(Thread.currentThread().getName() + "\tConnected");                       //Handler online
 
         try {
             skt.configureBlocking(false);
             Selector selector = Selector.open();
             keyR = skt.register(selector, SelectionKey.OP_READ);
-            keyW = skt.register(selector, SelectionKey.OP_WRITE);
+            keyW = skt.register(selector, SelectionKey.OP_WRITE);                                   //Preparo i canali
 
             int n;
-            do {bBuff.clear(); n = ((SocketChannel) keyR.channel()).read(bBuff); } while (n == 0);  //Wait
-            do {n = ((SocketChannel) keyR.channel()).read(bBuff); } while (n > 0);
+            do {bBuff.clear(); n = ((SocketChannel) keyR.channel()).read(bBuff); } while (n == 0);  //Attesa
+            do {n = ((SocketChannel) keyR.channel()).read(bBuff); } while (n > 0);                  //Lettura
             bBuff.flip();
             sBuff.append(StandardCharsets.UTF_8.decode(bBuff).toString());
+            str = sBuff.toString();                                                                 //Costruzione String
 
-            str = sBuff.toString();
-            System.out.println(Thread.currentThread().getName() + "\t\"" + str + "\"");
-            str = str.concat("\tEchoed by Fexed's Server");
+            System.out.println(Thread.currentThread().getName() + "\t\"" + str + "\"");             //Output
+            str = str.concat("\tEchoed by Fexed's Server");                                         //Preparazione echo
             bBuff = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8));
-            do { n = ((SocketChannel) keyW.channel()).write(bBuff); }  while(n > 0);
+            do { n = ((SocketChannel) keyW.channel()).write(bBuff); }  while(n > 0);                //Invio echo
 
         } catch (IOException ignored) {}
 
-        System.out.println(Thread.currentThread().getName() + "\tDisconnesso");
+        System.out.println(Thread.currentThread().getName() + "\tDisconnected");                    //Handler offline
     }
 }
