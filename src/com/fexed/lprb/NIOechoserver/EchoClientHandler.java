@@ -34,7 +34,8 @@ public class EchoClientHandler implements Runnable {
             keyW = skt.register(selector, SelectionKey.OP_WRITE);
 
             int n;
-            do { n = ((SocketChannel) keyR.channel()).read(bBuff); } while (n > 0);
+            do {bBuff.clear(); n = ((SocketChannel) keyR.channel()).read(bBuff); } while (n == 0);  //Wait
+            do {n = ((SocketChannel) keyR.channel()).read(bBuff); } while (n > 0);
             bBuff.flip();
             sBuff.append(StandardCharsets.UTF_8.decode(bBuff).toString());
 

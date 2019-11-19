@@ -17,6 +17,7 @@ public class EchoClient {
     public static void main(String[] args) {
         try {
             Scanner in = new Scanner(System.in);                                        //Input
+            in.useDelimiter("\n");
             System.out.print("String to be echoed: ");
             String str = in.next();
 
@@ -32,10 +33,11 @@ public class EchoClient {
 
             ByteBuffer bBuff = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8));   //Scrittura
             int n;
-            do { n = ((SocketChannel) keyW.channel()).write(bBuff); }  while(n > 0);
+            do { n = ((SocketChannel) keyW.channel()).write(bBuff);}  while(n > 0);
             System.out.println("Data sent. Awating echo...");
 
             bBuff = ByteBuffer.allocate(128);                                           //Lettura
+            do {bBuff.clear(); n = ((SocketChannel) keyR.channel()).read(bBuff); } while (n == 0);
             do { n = ((SocketChannel) keyR.channel()).read(bBuff); } while (n > 0);
 
             bBuff.flip();                                                               //Stampa
