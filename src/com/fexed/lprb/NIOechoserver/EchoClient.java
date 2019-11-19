@@ -13,8 +13,13 @@ import java.util.Scanner;
 /**
  * @author Federico Matteoni
  */
-public class EchoClient {
+public class EchoClient implements Runnable{
     public static void main(String[] args) {
+        new Thread(new EchoClient()).start();
+    }
+
+    @Override
+    public void run() {
         try {
             Scanner in = new Scanner(System.in);                                                    //Input
             in.useDelimiter("\n");
@@ -45,6 +50,5 @@ public class EchoClient {
 
             skt.close();
         } catch (IOException ignored) {}
-
     }
 }
