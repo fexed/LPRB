@@ -34,7 +34,7 @@ public class UDPPingServer implements Runnable{
                     byte[] buff = new byte[rcvBuffSize];
                     DatagramPacket packet = new DatagramPacket(buff, buff.length);
                     dtgSkt.receive(packet);
-                    System.out.print(packet.getAddress().getHostAddress() + ":" + packet.getPort() + "> " + new String(packet.getData(), StandardCharsets.UTF_8));
+                    System.out.print(packet.getAddress().getHostAddress() + ":" + packet.getPort() + "> " + new String(packet.getData(), StandardCharsets.UTF_8).trim());
 
                     int n = getAction();
                     if (n == 0) {
