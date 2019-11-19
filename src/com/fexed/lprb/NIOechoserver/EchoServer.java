@@ -28,6 +28,8 @@ public class EchoServer implements Runnable {
             srvSkt.configureBlocking(false);
             selector = Selector.open();
             srvSkt.register(selector, SelectionKey.OP_ACCEPT);
+
+            System.out.println(Thread.currentThread().getName() + ": server online");
             do {
                 do { skt = srvSkt.accept(); } while(skt == null);
                 threadPool.execute(new EchoClientHandler(skt));                 //Gestione client connesso
