@@ -1,10 +1,9 @@
 package com.fexed.lprb.UDPPing;
 
-import java.net.DatagramPacket;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.io.IOException;
+import java.net.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Federico Matteoni
@@ -21,7 +20,33 @@ public class UDPPingClient implements Runnable {
 
     @Override
     public void run() {
+        int transmitted = 0, received = 0;
 
+        System.out.println("Launching " + this.getClass().getSimpleName() + " on " + this.hostname + ":" + this.port);
+
+        try {
+            DatagramSocket dtgSkt = new DatagramSocket();
+            dtgSkt.setSoTimeout(2000);
+            for (; transmitted < 10; transmitted++) {
+                try {
+
+                    byte[] buffer = ("PING " + transmitted + " " + System.currentTimeMillis()).getBytes(StandardCharsets.UTF_8);
+                    DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.hostname, this.port);
+                    System.out.print(new String(buffer, StandardCharsets.UTF_8) + " RTT: ");
+                    dtgSkt.send(packet);
+
+                    long time = System.currentTimeMillis();
+                    try {
+                        dtgSkt.receive(packet);
+                        time = System.currentTimeMillis() - time;
+                        System.out.println(time + " ms");
+                        received++;
+                    } catch (SocketTimeoutException ex) {
+                        System.out.println("*");
+                    }
+                } catch (IOException ex) { System.err.println("IOException error on packet " + transmitted + ". Resending"); transmitted--; }
+            }
+        } catch (SocketException ex) { System.err.println("SocketException error: " + ex.getMessage()); }
     }
 
     public static void main(String[] args) {
