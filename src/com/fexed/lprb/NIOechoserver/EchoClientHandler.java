@@ -44,7 +44,7 @@ public class EchoClientHandler implements Runnable {
 
             System.out.println(Thread.currentThread().getName() + "\t\"" + str + "\"");             //Output
 
-            str = str.concat("\tEchoed by Fexed's Echo Server");                                    //Preparazione echo
+            str = str.concat("\t(echoed by Fexed's Echo Server)");                                  //Preparazione echo
             bBuff = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8));
             do { n = ((SocketChannel) keyW.channel()).write(bBuff); }  while(n > 0);                //Invio echo
 
