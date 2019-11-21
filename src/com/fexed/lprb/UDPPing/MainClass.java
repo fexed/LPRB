@@ -1,5 +1,8 @@
 package com.fexed.lprb.UDPPing;
 
+/**
+ * @author Federico Matteoni
+ */
 public class MainClass {
     public static void main(String[] args) throws InterruptedException {
         Thread server = new Thread(new UDPPingServer(1337));

@@ -28,6 +28,9 @@ Il programma deve terminare quando tutti i pazienti utenti hanno completato le v
 
 import java.util.Random;
 
+/**
+ * @author Federico Matteoni
+ */
 public class MainClass {
 
     public static void main(String[] args) {

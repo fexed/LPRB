@@ -1,5 +1,8 @@
 package com.fexed.lprb.reparto;
 
+/**
+ * @author Federico Matteoni
+ */
 public class Medic {
     public int number;
 

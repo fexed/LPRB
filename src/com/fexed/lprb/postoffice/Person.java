@@ -2,6 +2,9 @@ package com.fexed.lprb.postoffice;
 
 import static java.lang.Thread.sleep;
 
+/**
+ * @author Federico Matteoni
+ */
 public class Person implements Runnable {
     public int number;
     public final int duration;

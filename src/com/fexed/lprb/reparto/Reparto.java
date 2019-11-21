@@ -2,6 +2,9 @@ package com.fexed.lprb.reparto;
 
 import java.util.Random;
 
+/**
+ * @author Federico Matteoni
+ */
 public class Reparto {
     private Medic[] medics;
     private boolean[] isOccupied;

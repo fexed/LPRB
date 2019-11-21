@@ -2,6 +2,9 @@ package com.fexed.lprb.postoffice;
 
 import java.util.LinkedList;
 
+/**
+ * @author Federico Matteoni
+ */
 public class PostOffice {
     private Thread[] door;
     private LinkedList<Person> waitingRoom;

@@ -8,6 +8,9 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Date;
 
+/**
+ * @author Federico Matteoni
+ */
 public class Handler implements Runnable {
     private Socket skt;
 

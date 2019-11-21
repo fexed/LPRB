@@ -1,7 +1,8 @@
 package com.fexed.lprb.pi;
 
-import java.util.concurrent.TimeUnit;
-
+/**
+ * @author Federico Matteoni
+ */
 public class PiMain {
     /*
     Scrivere un programma che attiva un thread T che effettua il calcolo approssimato di π. Il programma principale

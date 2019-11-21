@@ -11,6 +11,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+/**
+ * @author Federico Matteoni
+ */
 public class CCReader implements Runnable {
     @Override
     public void run() {

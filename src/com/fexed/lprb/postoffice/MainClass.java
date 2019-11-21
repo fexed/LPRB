@@ -29,6 +29,10 @@ Scrivere un programma in cui:
 Facoltativo: prevedere il caso di un flusso continuo di clienti e la possibilità che l'operatore chiuda lo sportello
 stesso dopo che in un certo intervallo di tempo non si presentano clienti al suo sportello.
  */
+
+/**
+ * @author Federico Matteoni
+ */
 public class MainClass {
     public static void main(String[] args) {
         PostOffice po = new PostOffice(10);

@@ -1,5 +1,8 @@
 package com.fexed.lprb.conticorrenti;
 
+/**
+ * @author Federico Matteoni
+ */
 public class CCStats {
     private static int nBonifico = 0;
     private static int nAccredito = 0;

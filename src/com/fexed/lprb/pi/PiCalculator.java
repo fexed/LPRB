@@ -1,5 +1,8 @@
 package com.fexed.lprb.pi;
 
+/**
+ * @author Federico Matteoni
+ */
 public class PiCalculator implements Runnable {
     private float accuracy;
     public boolean isRunning;

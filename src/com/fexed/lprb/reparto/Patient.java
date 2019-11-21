@@ -2,6 +2,9 @@ package com.fexed.lprb.reparto;
 
 import java.util.Random;
 
+/**
+ * @author Federico Matteoni
+ */
 public class Patient implements Runnable {
     public String name;
     public int code;

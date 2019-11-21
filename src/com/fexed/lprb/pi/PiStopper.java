@@ -4,6 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
 
+/**
+ * @author Federico Matteoni
+ */
 public class PiStopper implements Runnable {
     private int time;
     private PiCalculator calculator;

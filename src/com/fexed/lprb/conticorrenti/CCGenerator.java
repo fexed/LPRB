@@ -13,8 +13,10 @@ import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
+/**
+ * @author Federico Matteoni
+ */
 public class CCGenerator {
     public static void main(String[] args) {
         String[] type = {"Bonifico", "Accredito", "Bollettino", "F24", "PagoBancomat"};

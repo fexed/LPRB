@@ -10,6 +10,9 @@ Il server accetta richieste di connessioni dai client, riceve messaggi inviati d
 Il client legge il messaggio da inviare da console, lo invia al server e visualizza quanto ricevuto dal server.
  */
 
+/**
+ * @author Federico Matteoni
+ */
 public class MainClass {
 
     public static void main(String[] args) throws InterruptedException {

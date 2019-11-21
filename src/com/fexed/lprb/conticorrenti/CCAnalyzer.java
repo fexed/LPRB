@@ -1,5 +1,8 @@
 package com.fexed.lprb.conticorrenti;
 
+/**
+ * @author Federico Matteoni
+ */
 public class CCAnalyzer implements Runnable {
     public CCPerson p;
 

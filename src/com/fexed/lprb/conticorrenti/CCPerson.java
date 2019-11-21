@@ -2,6 +2,9 @@ package com.fexed.lprb.conticorrenti;
 
 import java.util.List;
 
+/**
+ * @author Federico Matteoni
+ */
 public class CCPerson {
     public String nome, cognome;
     public List<CCMovement> movimenti;
