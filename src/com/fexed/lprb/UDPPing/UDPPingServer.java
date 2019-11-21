@@ -15,6 +15,10 @@ import java.util.Random;
 public class UDPPingServer implements Runnable{
     private int port;
 
+    /**
+     * Costruisce il server sulla porta indicata
+     * @param port La porta su cui ascoltare i datagrammi UDP
+     */
     public UDPPingServer(int port) {
         this.port = port;
     }
@@ -27,17 +31,17 @@ public class UDPPingServer implements Runnable{
             dtgSkt.setSoTimeout(60000);
             int rcvBuffSize = dtgSkt.getReceiveBufferSize();
             int sndBuffSize = dtgSkt.getSendBufferSize();
-            System.out.println("RCV: " + rcvBuffSize + " B\tSND: " + sndBuffSize + " B");
+            System.out.println("RCV: " + rcvBuffSize + " B\tSND: " + sndBuffSize + " B");   //Avvio il server
 
             try {
                 do {
-                    byte[] buff = new byte[rcvBuffSize];
+                    byte[] buff = new byte[rcvBuffSize];                                    //Ascolto i datagrammi
                     DatagramPacket packet = new DatagramPacket(buff, buff.length);
                     dtgSkt.receive(packet);
                     System.out.print(packet.getAddress().getHostAddress() + ":" + packet.getPort() + "> " + new String(packet.getData(), StandardCharsets.UTF_8).trim());
 
-                    int n = getAction();
-                    if (n == 0) {
+                    int n = getAction();                                                    //Decido cosa fare
+                    if (n == 0) { //0 = delay, 1 = don't send
                         int delay = getDelay();
                         System.out.println(" ACTION: delayed " + delay + " ms");
 
@@ -51,7 +55,7 @@ public class UDPPingServer implements Runnable{
                         System.out.println(" ACTION: not sent");
                     }
                 } while (true);
-            } catch (SocketTimeoutException ex) { System.err.println("Timeout server, 1m");
+            } catch (SocketTimeoutException ex) { System.err.println("Timeout server, 1m"); //Closing the server on timeout
             } catch (IOException ex) { System.err.println("IOException on receive: " + ex.getMessage()); }
         } catch (SocketException ex) { System.err.println("Couldn't open server on port " + this.port); }
     }
@@ -76,6 +80,10 @@ public class UDPPingServer implements Runnable{
         return rnd.nextInt(450) + 50;
     }
 
+    /**
+     * Controlla i parametri da linea di comando e in caso lancia il server
+     * @param args Parametri del programma
+     */
     public static void main(String[] args) {
         if (args.length != 1) System.err.println("Usage: java UDPPingServer port");
         else {
