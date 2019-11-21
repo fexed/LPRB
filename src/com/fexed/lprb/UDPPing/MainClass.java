@@ -11,6 +11,5 @@ public class MainClass {
         client.join();
         System.out.println("Client finished, wait 1m for server timeout");
         server.join();
-
     }
 }
