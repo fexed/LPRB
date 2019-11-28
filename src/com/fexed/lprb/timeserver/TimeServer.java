@@ -31,7 +31,7 @@ public class TimeServer implements Runnable {
             skt = new DatagramSocket(this.port);
 
             buffer = "ohciao".getBytes(StandardCharsets.UTF_8);
-            packet = new DatagramPacket(buffer, buffer.length, this.addr, this.port);
+            packet = new DatagramPacket(buffer, buffer.length, this.addr, this.port+1);
             skt.send(packet);
         } catch (IOException ex) { ex.printStackTrace(); }
     }

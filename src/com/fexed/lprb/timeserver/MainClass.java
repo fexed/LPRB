@@ -29,13 +29,13 @@ public class MainClass {
                 InetAddress addr = InetAddress.getByName(args[0]);
                 int port = Integer.parseInt(args[1]);
                 if (addr.isMulticastAddress()) {
-                    Thread server = new Thread(new TimeServer(addr, port));
-                    server.setName("TimeServerThread");
-                    server.start();
-
                     Thread client = new Thread(new TimeClient(addr, port));
                     client.setName("TimeClientThread");
                     client.start();
+
+                    Thread server = new Thread(new TimeServer(addr, port));
+                    server.setName("TimeServerThread");
+                    server.start();
                     try {
                         client.join();
                     } catch (InterruptedException ignored) {}

@@ -30,7 +30,7 @@ public class TimeClient implements Runnable {
         byte[] buffer;
 
         try {
-            mcSkt = new MulticastSocket(this.port);
+            mcSkt = new MulticastSocket(this.port+1);
             mcSkt.joinGroup(this.addr);
 
             buffer = new byte[256];
