@@ -1,6 +1,5 @@
 package com.fexed.lprb.timeserver;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -33,10 +32,12 @@ public class TimeClient implements Runnable {
             mcSkt = new MulticastSocket(this.port+1);
             mcSkt.joinGroup(this.addr);
 
-            buffer = new byte[256];
-            packet = new DatagramPacket(buffer, buffer.length);
-            mcSkt.receive(packet);
-            System.out.println(new String(packet.getData()).trim());
+            for (int i = 0; i < 10; i++) {
+                buffer = new byte[256];
+                packet = new DatagramPacket(buffer, buffer.length);
+                mcSkt.receive(packet);
+                System.out.println(i+1 + "\t" + new String(packet.getData()).trim());
+            }
         } catch (IOException ex) { ex.printStackTrace(); }
     }
 

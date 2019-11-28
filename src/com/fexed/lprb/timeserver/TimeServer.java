@@ -1,9 +1,12 @@
 package com.fexed.lprb.timeserver;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author Federico Matteoni
@@ -30,9 +33,15 @@ public class TimeServer implements Runnable {
         try {
             skt = new DatagramSocket(this.port);
 
-            buffer = "ohciao".getBytes(StandardCharsets.UTF_8);
-            packet = new DatagramPacket(buffer, buffer.length, this.addr, this.port+1);
-            skt.send(packet);
+            do {
+                DateFormat format = new SimpleDateFormat("dd/MM/yyy HH.mm.ss");
+                Date date = Calendar.getInstance().getTime();
+                buffer = format.format(date).getBytes(StandardCharsets.UTF_8);
+                packet = new DatagramPacket(buffer, buffer.length, this.addr, this.port + 1);
+                skt.send(packet);
+                try { Thread.sleep(1000); }
+                catch (InterruptedException ignored) {}
+            } while (true);
         } catch (IOException ex) { ex.printStackTrace(); }
     }
 
