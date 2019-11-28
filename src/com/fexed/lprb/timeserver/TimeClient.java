@@ -36,7 +36,7 @@ public class TimeClient implements Runnable {
             buffer = new byte[256];
             packet = new DatagramPacket(buffer, buffer.length);
             mcSkt.receive(packet);
-            System.out.println(new String(packet.getData()));
+            System.out.println(new String(packet.getData()).trim());
         } catch (IOException ex) { ex.printStackTrace(); }
     }
 
