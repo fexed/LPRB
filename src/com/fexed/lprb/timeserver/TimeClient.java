@@ -1,6 +1,8 @@
 package com.fexed.lprb.timeserver;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
@@ -23,10 +25,19 @@ public class TimeClient implements Runnable {
 
     @Override
     public void run() {
-        try {
-            MulticastSocket msSkt = new MulticastSocket();
+        MulticastSocket mcSkt;
+        DatagramPacket packet;
+        byte[] buffer;
 
-        } catch (IOException ex) { System.err.println(Thread.currentThread().getName() + "\tErrore"); }
+        try {
+            mcSkt = new MulticastSocket(this.port);
+            mcSkt.joinGroup(this.addr);
+
+            buffer = new byte[256];
+            packet = new DatagramPacket(buffer, buffer.length);
+            mcSkt.receive(packet);
+            System.out.println(new String(packet.getData()));
+        } catch (IOException ex) { ex.printStackTrace(); }
     }
 
     public static void main(String[] args) {

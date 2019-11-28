@@ -1,7 +1,9 @@
 package com.fexed.lprb.timeserver;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import javax.xml.crypto.Data;
+import java.io.IOException;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Federico Matteoni
@@ -21,7 +23,17 @@ public class TimeServer implements Runnable {
 
     @Override
     public void run() {
+        DatagramSocket skt;
+        DatagramPacket packet;
+        byte[] buffer;
 
+        try {
+            skt = new DatagramSocket(this.port);
+
+            buffer = "ohciao".getBytes(StandardCharsets.UTF_8);
+            packet = new DatagramPacket(buffer, buffer.length, this.addr, this.port);
+            skt.send(packet);
+        } catch (IOException ex) { ex.printStackTrace(); }
     }
 
     public static void main(String[] args) {
