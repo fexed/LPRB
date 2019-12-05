@@ -9,6 +9,12 @@ Il server mantiene i programmi delle 3 giornate del congresso, ciascuno dei qual
 come quella mostrata in allegato, in cui ad ogni riga corrisponde una sessione (in tutto 12 per ogni giornata).
 Per ciascuna sessione vengono memorizzati i nomi degli speaker che si sono registrati (al massimo 5).
 
+        Sessione        Intervento1     Intervento2     ...     Intervento5
+        S1              nomespeaker1    nomespeaker2            nomespeaker5
+        S2              nomespeaker1    nomespeaker2            nomespeaker5
+        ...
+        S12             nomespeaker1    nomespeaker2            nomespeaker5
+
 Il client può richiedere operazioni per:
     - registrare uno speaker ad una sessione;
     - ottenere il programma del congresso;
