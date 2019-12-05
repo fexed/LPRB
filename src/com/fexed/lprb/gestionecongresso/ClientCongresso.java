@@ -1,11 +1,19 @@
 package com.fexed.lprb.gestionecongresso;
 
+import java.rmi.Remote;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 /**
  * @author Federico Matteoni
  */
 public class ClientCongresso implements Runnable {
+    private int porta;
+
+    public ClientCongresso(int porta) {
+        this.porta = porta;
+    }
 
     private void printMenu() {
         System.out.println("\n\n****\tMenù di accesso alla piattaforma");
@@ -17,36 +25,48 @@ public class ClientCongresso implements Runnable {
 
     @Override
     public void run() {
-        int n;
-        Scanner s = new Scanner(System.in);
+        InterfacciaCongresso congresso = null;
 
-        do {
-            printMenu();
-            n = s.nextInt();
+        try {
+            Registry r = LocateRegistry.getRegistry(this.porta);
+            congresso = (InterfacciaCongresso) r.lookup("CONGRESSO-SERVER");
 
-            switch (n) {
-                case 1:
-                    //TODO
-                    System.out.println("Raccolta informazioni dal server");
-                    break;
-                case 2:
-                    //TODO
-                    System.out.println("Recupero del programma dal server");
-                    break;
-                case 0:
-                    System.out.println("****\tGrazie per aver usato la piattaforma, arrivederci!");
-                    break;
-                default:
-                    System.err.println("Comando non riconosciuto, riprovare.");
-                    n = -1;
-                    break;
-            }
-        } while (n != 0);
+            if (congresso != null) {
+                System.out.println("Client connesso al server su porta " + this.porta);
+                int n;
+                Scanner s = new Scanner(System.in);
+
+                do {
+                    printMenu();
+                    n = s.nextInt();
+
+                    switch (n) {
+                        case 1:
+                            //TODO
+                            System.out.println("Raccolta informazioni dal server");
+
+                            break;
+                        case 2:
+                            //TODO
+                            System.out.println("Recupero del programma dal server");
+                            break;
+                        case 0:
+                            System.out.println("****\tGrazie per aver usato la piattaforma, arrivederci!");
+                            break;
+                        default:
+                            System.err.println("Comando non riconosciuto, riprovare.");
+                            n = -1;
+                            break;
+                    }
+                } while (n != 0);
+            } else System.err.println("Errore nel caricamento del congresso.");
+        } catch (Exception ex) { System.err.println("Errore durante l'inizializzazione: " + ex.getMessage()); }
 
     }
 
     public static void main(String[] args) {
-        Thread T = new Thread(new ClientCongresso());
+        //TODO porta da linea di comando
+        Thread T = new Thread(new ClientCongresso(1337));
         T.setName("Client");
         T.start();
     }
