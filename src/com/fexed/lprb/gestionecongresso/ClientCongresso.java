@@ -2,6 +2,9 @@ package com.fexed.lprb.gestionecongresso;
 
 import java.util.Scanner;
 
+/**
+ * @author Federico Matteoni
+ */
 public class ClientCongresso implements Runnable {
 
     private void printMenu() {

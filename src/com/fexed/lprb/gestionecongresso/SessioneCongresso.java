@@ -2,6 +2,7 @@ package com.fexed.lprb.gestionecongresso;
 
 /**
  * Singola sessione di congresso nella giornata, contenente i 5 interventi
+ * @author Federico Matteoni
  */
 public class SessioneCongresso {
     /**

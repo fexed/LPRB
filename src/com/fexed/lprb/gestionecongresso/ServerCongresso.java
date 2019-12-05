@@ -1,5 +1,8 @@
 package com.fexed.lprb.gestionecongresso;
 
+/**
+ * @author Federico Matteoni
+ */
 public class ServerCongresso implements Runnable {
     @Override
     public void run() {
