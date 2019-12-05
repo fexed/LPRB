@@ -23,6 +23,16 @@ public class ClientCongresso implements Runnable {
         System.out.print("****\t\t> ");
     }
 
+    private void printCalendario(GiornataCongresso giornata) {
+        for (int i = 0; i < giornata.sessioni.length; i++) {
+            System.out.print("S" + (i+1));
+            for (int j = 0; j < giornata.sessioni[i].interventi.length; i++) {
+                System.out.print("\t" + giornata.sessioni[i].interventi[j].nomeSpeaker);
+            }
+            System.out.println("");
+        }
+    }
+
     @Override
     public void run() {
         InterfacciaCongresso congresso = null;
@@ -44,11 +54,18 @@ public class ClientCongresso implements Runnable {
                         case 1:
                             //TODO
                             System.out.println("Raccolta informazioni dal server");
-
                             break;
                         case 2:
-                            //TODO
                             System.out.println("Recupero del programma dal server");
+                            if (congresso.getGiornate() == null)
+                                System.out.println("Il congresso è ancora vuoto.");
+                            else {
+                                for (int i = 0; i < congresso.getGiornate().length; i++) {
+                                    System.out.println("\nGiornata " + (i+1));
+                                    printCalendario(congresso.getGiornate()[i]);
+                                    System.out.println("");
+                                }
+                            }
                             break;
                         case 0:
                             System.out.println("****\tGrazie per aver usato la piattaforma, arrivederci!");
@@ -60,7 +77,7 @@ public class ClientCongresso implements Runnable {
                     }
                 } while (n != 0);
             } else System.err.println("Errore nel caricamento del congresso.");
-        } catch (Exception ex) { System.err.println("Errore durante l'inizializzazione: " + ex.getMessage()); }
+        } catch (Exception ex) { System.err.println("Errore: " + ex.getMessage()); }
 
     }
 

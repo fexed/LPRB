@@ -17,6 +17,7 @@ public class ServerCongresso extends RemoteServer implements Runnable, Interfacc
     public ServerCongresso(int porta) throws RemoteException {
         super();
         this.giornate = new GiornataCongresso[3];
+        for (int i = 0; i < 3; i++) this.giornate[i] = new GiornataCongresso(i);
         this.porta = porta;
     }
 
