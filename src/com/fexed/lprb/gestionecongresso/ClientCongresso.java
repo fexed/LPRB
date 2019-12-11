@@ -24,13 +24,21 @@ public class ClientCongresso implements Runnable {
     }
 
     private void printCalendario(GiornataCongresso giornata) {
-        for (int i = 0; i < giornata.sessioni.length; i++) {
-            System.out.print("S" + (i+1));
-            for (int j = 0; j < giornata.sessioni[i].interventi.length; i++) {
-                System.out.print("\t" + giornata.sessioni[i].interventi[j].nomeSpeaker);
-            }
-            System.out.println("");
-        }
+        //TODO fix checks
+        if (giornata.sessioni != null) {
+            if (giornata.sessioni.length > 0) {
+                for (int i = 0; i < giornata.sessioni.length; i++) {
+                    if (giornata.sessioni[i] != null) {
+                        System.out.print("S" + (i + 1));
+                        if (giornata.sessioni[i].interventi.length > 0) {
+                            for (int j = 0; j < giornata.sessioni[i].interventi.length; i++) {
+                                System.out.print("\t" + giornata.sessioni[i].interventi[j].nomeSpeaker);
+                            }
+                        } else System.out.println("");
+                    } else System.out.println("");
+                }
+            } else System.out.println("");
+        } else System.out.println("");
     }
 
     @Override
@@ -60,11 +68,13 @@ public class ClientCongresso implements Runnable {
                             if (congresso.getGiornate() == null)
                                 System.out.println("Il congresso è ancora vuoto.");
                             else {
-                                for (int i = 0; i < congresso.getGiornate().length; i++) {
-                                    System.out.println("\nGiornata " + (i+1));
-                                    printCalendario(congresso.getGiornate()[i]);
-                                    System.out.println("");
-                                }
+                                if (congresso.getGiornate().length > 0) {
+                                    for (int i = 0; i < congresso.getGiornate().length; i++) {
+                                        System.out.println("\nGiornata " + (i + 1));
+                                        printCalendario(congresso.getGiornate()[i]);
+                                        System.out.println("");
+                                    }
+                                } else System.out.println("Il congresso è ancora privo di giornate programmate.");
                             }
                             break;
                         case 0:
@@ -77,7 +87,7 @@ public class ClientCongresso implements Runnable {
                     }
                 } while (n != 0);
             } else System.err.println("Errore nel caricamento del congresso.");
-        } catch (Exception ex) { System.err.println("Errore: " + ex.getMessage()); }
+        } catch (Exception ex) { System.err.println("Errore"); ex.printStackTrace(); }
 
     }
 
