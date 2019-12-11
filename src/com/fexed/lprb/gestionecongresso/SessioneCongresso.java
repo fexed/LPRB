@@ -1,10 +1,12 @@
 package com.fexed.lprb.gestionecongresso;
 
+import java.io.Serializable;
+
 /**
  * Singola sessione di congresso nella giornata, contenente i 5 interventi
  * @author Federico Matteoni
  */
-public class SessioneCongresso {
+public class SessioneCongresso implements Serializable {
     /**
      * Il numero della sessione di congresso
      */

@@ -24,5 +24,8 @@ public class GiornataCongresso implements Serializable {
     public GiornataCongresso(int n) {
         this.nGiornata = n;
         this.sessioni = new SessioneCongresso[12];
+        for (int i = 0; i < 12; i++) {
+            this.sessioni[i] = new SessioneCongresso(i+1);
+        }
     }
 }

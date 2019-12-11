@@ -1,6 +1,7 @@
 package com.fexed.lprb.gestionecongresso;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
@@ -16,29 +17,33 @@ public class ClientCongresso implements Runnable {
     }
 
     private void printMenu() {
-        System.out.println("\n\n****\tMenù di accesso alla piattaforma");
+        System.out.println("****\tMenù di accesso alla piattaforma");
         System.out.println("****\t\t1. Registrare uno speaker per una sessione");
         System.out.println("****\t\t2. Visualizzare il programma del congresso");
         System.out.println("****\t\t0. Uscire");
         System.out.print("****\t\t> ");
     }
 
-    private void printCalendario(GiornataCongresso giornata) {
+    private void printCalendario(InterfacciaCongresso congresso) throws RemoteException {
         //TODO fix checks
-        if (giornata.sessioni != null) {
-            if (giornata.sessioni.length > 0) {
-                for (int i = 0; i < giornata.sessioni.length; i++) {
-                    if (giornata.sessioni[i] != null) {
-                        System.out.print("S" + (i + 1));
-                        if (giornata.sessioni[i].interventi.length > 0) {
-                            for (int j = 0; j < giornata.sessioni[i].interventi.length; i++) {
-                                System.out.print("\t" + giornata.sessioni[i].interventi[j].nomeSpeaker);
-                            }
-                        } else System.out.println("");
-                    } else System.out.println("");
+        GiornataCongresso[] giornate = congresso.getGiornate();
+        for (int i = 0; i < 3; i++) {
+            System.out.println("Giornata " + giornate[i].nGiornata);
+            SessioneCongresso[] sessioni = congresso.getSessioni(i);
+            for (int j = 0; j < 12; j++) {
+                System.out.print("S" + sessioni[j].nSessione + "\t");
+                InterventoCongresso[] interventi = congresso.getInterventi(i, j);
+                for (int k = 0; k < 5; k++) {
+                    System.out.print(k+1 + ". ");
+                    try {
+                        System.out.print(interventi[i].nomeSpeaker + ", ");
+                    } catch (NullPointerException ex) {System.out.print("vuoto, ");}
                 }
-            } else System.out.println("");
-        } else System.out.println("");
+                System.out.println("");
+            }
+            System.out.println("");
+        }
+        System.out.println("");
     }
 
     @Override
@@ -52,29 +57,57 @@ public class ClientCongresso implements Runnable {
             if (congresso != null) {
                 System.out.println("Client connesso al server su porta " + this.porta);
                 int n;
-                Scanner s = new Scanner(System.in);
+                Scanner scn = new Scanner(System.in);
 
                 do {
                     printMenu();
-                    n = s.nextInt();
+                    n = scn.nextInt();
 
                     switch (n) {
                         case 1:
-                            //TODO
                             System.out.println("Raccolta informazioni dal server");
+                            try {
+                                int giorno, sessione, intervento;
+                                String name;
+
+                                do {
+                                    System.out.print("A quale giornata ci si vuole registrare? 0 per annullare\n[1-3] ");
+                                    giorno = scn.nextInt();
+                                } while (giorno < 0 || giorno > 3);
+                                if (giorno != 0) {
+                                    //congresso.getGiornate()[giorno - 1];
+                                    do {
+                                        System.out.print("A quale sessione ci si vuole iscrivere?\n[1-12] ");
+                                        sessione = scn.nextInt();
+                                    } while(sessione < 1 || sessione > 12);
+
+                                    //congresso.getGiornate()[giorno - 1].sessioni[sessione - 1];
+                                    do {
+                                        System.out.print("A quale intervento ci si vuole iscrivere?\n[1-5] ");
+                                        intervento = scn.nextInt();
+                                    } while (intervento < 1 || intervento > 5);
+
+                                    if (congresso.getInterventi(giorno - 1, sessione - 1)[intervento - 1] == null) {
+                                        System.out.print("Perfetto, a che nome? ");
+                                        name = scn.next();
+                                        if (congresso.newIntervento(giorno - 1, sessione - 1, intervento - 1, name)) {
+                                            System.out.println("Speaker " + congresso.getInterventi(giorno - 1, sessione - 1)[intervento - 1].nomeSpeaker + " registrato con successo!");
+                                        } else System.err.println("Errore");
+                                        //congresso.getGiornate()[giorno - 1].sessioni[sessione - 1].interventi[intervento - 1];
+                                    } else {
+                                        //congresso.getGiornate()[giorno - 1].sessioni[sessione - 1].interventi[intervento - 1];
+                                        System.err.println("Spiacenti, intervento già prenotato da " + congresso.getInterventi(giorno - 1, sessione - 1)[intervento - 1].nomeSpeaker);
+                                    }
+                                }
+                            }
+                            catch (Exception ex) { System.err.println("Errore"); ex.printStackTrace(); }
                             break;
                         case 2:
                             System.out.println("Recupero del programma dal server");
                             if (congresso.getGiornate() == null)
                                 System.out.println("Il congresso è ancora vuoto.");
                             else {
-                                if (congresso.getGiornate().length > 0) {
-                                    for (int i = 0; i < congresso.getGiornate().length; i++) {
-                                        System.out.println("\nGiornata " + (i + 1));
-                                        printCalendario(congresso.getGiornate()[i]);
-                                        System.out.println("");
-                                    }
-                                } else System.out.println("Il congresso è ancora privo di giornate programmate.");
+                                printCalendario(congresso);
                             }
                             break;
                         case 0:

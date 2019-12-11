@@ -17,7 +17,7 @@ public class ServerCongresso extends RemoteServer implements Runnable, Interfacc
     public ServerCongresso(int porta) throws RemoteException {
         super();
         this.giornate = new GiornataCongresso[3];
-        for (int i = 0; i < 3; i++) this.giornate[i] = new GiornataCongresso(i);
+        for (int i = 0; i < 3; i++) this.giornate[i] = new GiornataCongresso(i+1);
         this.porta = porta;
     }
 
@@ -25,7 +25,7 @@ public class ServerCongresso extends RemoteServer implements Runnable, Interfacc
     public void run() {
         try {
             //Esportazione dell'oggetto
-            InterfacciaCongresso stub = (InterfacciaCongresso) UnicastRemoteObject.exportObject(this, 0);
+            InterfacciaCongresso stub = (InterfacciaCongresso) UnicastRemoteObject.exportObject(this, this.porta);
 
             //Crezione del registro
             LocateRegistry.createRegistry(this.porta);
@@ -53,8 +53,29 @@ public class ServerCongresso extends RemoteServer implements Runnable, Interfacc
     }
 
     @Override
-    public GiornataCongresso getGiornata(int giorno) throws RemoteException {
-        if (giorno >= 0 && giorno <= 3) return this.giornate[giorno];
-        else return null;
+    public SessioneCongresso[] getSessioni(int giorno) throws RemoteException {
+        SessioneCongresso[] sessioni = this.giornate[giorno].sessioni;
+        if (sessioni == null) {
+            sessioni = new SessioneCongresso[12];
+            for (int i = 0; i < 12; i++) sessioni[i] = new SessioneCongresso(i);
+        }
+        return sessioni;
+    }
+
+    @Override
+    public InterventoCongresso[] getInterventi(int giorno, int sessione) throws RemoteException {
+        if (getSessioni(giorno)[sessione] == null) getSessioni(giorno)[sessione] = new SessioneCongresso(sessione);
+        InterventoCongresso[] interventi = this.giornate[giorno].sessioni[sessione].interventi;
+        if (interventi == null) interventi = new InterventoCongresso[5];
+        return interventi;
+    }
+
+    @Override
+    public boolean newIntervento(int giorno, int sessione, int intervento, String speaker) throws RemoteException {
+        if (getInterventi(giorno, sessione)[intervento] != null) return false;
+        else {
+            getInterventi(giorno, sessione)[intervento] = new InterventoCongresso(speaker);
+            return true;
+        }
     }
 }

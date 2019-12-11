@@ -15,11 +15,9 @@ public interface InterfacciaCongresso extends Remote {
      */
     GiornataCongresso[] getGiornate() throws RemoteException;
 
-    /**
-     * Ritorna una singola giornata di congresso, specificata dal parametro giorno
-     * @param giorno La giornata da restituire
-     * @return La n-esima giornata di congresso
-     * @throws RemoteException
-     */
-    GiornataCongresso getGiornata(int giorno) throws RemoteException;
+    SessioneCongresso[] getSessioni(int giorno) throws RemoteException;
+
+    InterventoCongresso[] getInterventi(int giorno, int sessione) throws RemoteException;
+
+    boolean newIntervento(int giorno, int sessione, int intervento, String speaker) throws RemoteException;
 }
