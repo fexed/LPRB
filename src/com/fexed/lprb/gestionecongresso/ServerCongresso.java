@@ -14,7 +14,7 @@ public class ServerCongresso extends RemoteServer implements Runnable, Interfacc
     private GiornataCongresso[] giornate;
     private int porta;
 
-    public ServerCongresso(int porta) throws RemoteException {
+    private ServerCongresso(int porta) {
         super();
         this.giornate = new GiornataCongresso[3];
         for (int i = 0; i < 3; i++) this.giornate[i] = new GiornataCongresso(i+1);
@@ -40,20 +40,13 @@ public class ServerCongresso extends RemoteServer implements Runnable, Interfacc
 
     }
 
-    public static void main(String[] args) throws RemoteException {
-        //TODO porta da riga di comando
-        Thread T = new Thread(new ServerCongresso(1337));
-        T.setName("Server del Congresso");
-        T.start();
-    }
-
     @Override
-    public GiornataCongresso[] getGiornate() throws RemoteException {
+    public GiornataCongresso[] getGiornate() {
         return this.giornate;
     }
 
     @Override
-    public SessioneCongresso[] getSessioni(int giorno) throws RemoteException {
+    public SessioneCongresso[] getSessioni(int giorno) {
         SessioneCongresso[] sessioni = this.giornate[giorno].sessioni;
         if (sessioni == null) {
             sessioni = new SessioneCongresso[12];
@@ -63,7 +56,7 @@ public class ServerCongresso extends RemoteServer implements Runnable, Interfacc
     }
 
     @Override
-    public InterventoCongresso[] getInterventi(int giorno, int sessione) throws RemoteException {
+    public InterventoCongresso[] getInterventi(int giorno, int sessione) {
         if (getSessioni(giorno)[sessione] == null) getSessioni(giorno)[sessione] = new SessioneCongresso(sessione);
         InterventoCongresso[] interventi = this.giornate[giorno].sessioni[sessione].interventi;
         if (interventi == null) interventi = new InterventoCongresso[5];
@@ -71,11 +64,24 @@ public class ServerCongresso extends RemoteServer implements Runnable, Interfacc
     }
 
     @Override
-    public boolean newIntervento(int giorno, int sessione, int intervento, String speaker) throws RemoteException {
+    public boolean newIntervento(int giorno, int sessione, int intervento, String speaker) {
         if (getInterventi(giorno, sessione)[intervento] != null) return false;
         else {
             getInterventi(giorno, sessione)[intervento] = new InterventoCongresso(speaker);
             return true;
+        }
+    }
+
+    public static void main(String[] args) {
+        if (args.length != 1) System.err.println("Usage: server <porta>");
+        else {
+            try {
+                int port = Integer.parseInt(args[0]);
+                if (port < 1024) throw new NumberFormatException();
+                Thread T = new Thread(new ServerCongresso(port));
+                T.setName("Server del Congresso");
+                T.start();
+            } catch (NumberFormatException ex) { System.err.println("Il parametro inserito non è una porta valida"); }
         }
     }
 }

@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class ClientCongresso implements Runnable {
     private int porta;
 
-    public ClientCongresso(int porta) {
+    private ClientCongresso(int porta) {
         this.porta = porta;
     }
 
@@ -25,7 +25,6 @@ public class ClientCongresso implements Runnable {
     }
 
     private void printCalendario(InterfacciaCongresso congresso) throws RemoteException {
-        //TODO fix checks
         GiornataCongresso[] giornate = congresso.getGiornate();
         for (int i = 0; i < 3; i++) {
             System.out.println("Giornata " + giornate[i].nGiornata);
@@ -39,16 +38,16 @@ public class ClientCongresso implements Runnable {
                         System.out.print(interventi[k].nomeSpeaker + ", ");
                     } catch (NullPointerException ex) {System.out.print("____, ");}
                 }
-                System.out.println("");
+                System.out.println();
             }
-            System.out.println("");
+            System.out.println();
         }
-        System.out.println("");
+        System.out.println();
     }
 
     @Override
     public void run() {
-        InterfacciaCongresso congresso = null;
+        InterfacciaCongresso congresso;
 
         try {
             Registry r = LocateRegistry.getRegistry(this.porta);
@@ -125,9 +124,15 @@ public class ClientCongresso implements Runnable {
     }
 
     public static void main(String[] args) {
-        //TODO porta da linea di comando
-        Thread T = new Thread(new ClientCongresso(1337));
-        T.setName("Client");
-        T.start();
+        if (args.length != 1) System.err.println("Usage: server <porta>");
+        else {
+            try {
+                int port = Integer.parseInt(args[0]);
+                if (port < 1024) throw new NumberFormatException();
+                Thread T = new Thread(new ClientCongresso(port));
+                T.setName("Client");
+                T.start();
+            } catch (NumberFormatException ex) { System.err.println("Il parametro inserito non è una porta valida"); }
+        }
     }
 }
