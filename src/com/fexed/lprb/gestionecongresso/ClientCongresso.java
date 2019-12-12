@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class ClientCongresso implements Runnable {
     private int porta;
 
-    private ClientCongresso(int porta) {
+    ClientCongresso(int porta) {
         this.porta = porta;
     }
 

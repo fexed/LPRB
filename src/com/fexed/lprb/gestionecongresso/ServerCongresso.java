@@ -14,7 +14,7 @@ public class ServerCongresso extends RemoteServer implements Runnable, Interfacc
     private GiornataCongresso[] giornate;
     private int porta;
 
-    private ServerCongresso(int porta) {
+    ServerCongresso(int porta) {
         super();
         this.giornate = new GiornataCongresso[3];
         for (int i = 0; i < 3; i++) this.giornate[i] = new GiornataCongresso(i+1);
@@ -79,7 +79,7 @@ public class ServerCongresso extends RemoteServer implements Runnable, Interfacc
                 int port = Integer.parseInt(args[0]);
                 if (port < 1024) throw new NumberFormatException();
                 Thread T = new Thread(new ServerCongresso(port));
-                T.setName("Server del Congresso");
+                T.setName("Server");
                 T.start();
             } catch (NumberFormatException ex) { System.err.println("Il parametro inserito non è una porta valida"); }
         }
