@@ -36,8 +36,8 @@ public class ClientCongresso implements Runnable {
                 for (int k = 0; k < 5; k++) {
                     System.out.print(k+1 + ". ");
                     try {
-                        System.out.print(interventi[i].nomeSpeaker + ", ");
-                    } catch (NullPointerException ex) {System.out.print("vuoto, ");}
+                        System.out.print(interventi[k].nomeSpeaker + ", ");
+                    } catch (NullPointerException ex) {System.out.print("____, ");}
                 }
                 System.out.println("");
             }
